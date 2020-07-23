@@ -1,0 +1,224 @@
+﻿@{
+    Layout = "../_Shared/Main";
+    ViewData["title"] = "菜单设置";
+}
+
+@section script
+{
+    <script>
+        let rsSysMenuList = @Html.Raw(ViewBag.rsSysMenuList);
+        $(function () {
+            $("button[bind-cmd='add']").on("click", () => {
+                let sidebarData = {
+                    menuName: "",
+                    menuGroupId: 0,
+                    menuType: 1,
+                    menuCtr: "",
+                    menuAct: "",
+                    menuSort: 0,
+                    menuIcon: "",
+                    status: 1
+                };
+                Sidebar.Init({
+                    "title": "添加菜单",
+                    "data": assignSidebarData(sidebarData),
+                    "event": (container) => {
+                        assignSidebarEvent(container, sidebarData);
+                    }
+                });
+            });
+            getMenuTree();
+        });
+
+        /**
+         * 给sidebar的event事件赋值
+         */
+        function assignSidebarEvent(container, data) {
+            let inputStatus = container.find("div[bind-tag='status']");
+            let inputMctr = container.find("input[name='menuCtr']");
+            let inputMact = container.find("input[name='menuAct']");
+            let inputIcon = container.find("input[name='menuIcon']");
+            let dropdownMenuType = container.find(".ui.selection.dropdown.menuType");
+            let dropdownMenuGroup = container.find(".ui.selection.dropdown.menuGroupId");
+            inputStatus.checkbox(inputStatus.attr("bind-val") === `${data.status}` ? "check" : "uncheck");
+            setMenuTypeVal(dropdownMenuType, data.menuType, inputMctr, inputMact, inputIcon);
+            setMenuGroupVal(dropdownMenuGroup, data.menuGroupId, dropdownMenuType);
+            container.find(".ui.icon.button").click(() => {
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['780px', '550px'], //宽高
+                    content: ['@Url.Action("Icon", "Index")']
+                });
+            });
+            submitForm(container, dropdownMenuType, inputMctr, inputMact, inputIcon);
+        }
+
+        /**
+         * 给sidebar的data事件赋值
+         */
+        function assignSidebarData(data) {
+            let menuGroupData = [{ "val": 0, "text": "顶级菜单" }];
+            try {
+                for (let item of rsSysMenuList) {
+                    menuGroupData.push({ "val": item['id'], "text": item['name'] });
+                }
+            } catch (e) {
+                console.info(e);
+            };
+            return [
+                { "type": "input", "name": "menuName", "val": data.menuName, "label": "菜单名称" },
+                {
+                    "type": "dropdown", "name": "menuGroupId", "val": data.menuGroupId, "label": "所属菜单", "list": menuGroupData
+                },
+                {
+                    "type": "dropdown", "name": "menuType", "val": data.menuType, "label": "菜单类型", "list": [
+                        { "text": "目录", "val": 1 }, { "text": "菜单", "val": 2 }
+                    ]
+                },
+                { "type": "input", "name": "menuCtr", "val": data.menuCtr, "label": "Controller名" },
+                { "type": "input", "name": "menuAct", "val": data.menuAct, "label": "Action名" },
+                { "type": "number", "name": "menuSort", "val": data.menuSort, "label": "排序", "des": "数字越大，越靠前" },
+                { "type": "icon", "name": "menuIcon", "val": data.menuIcon, "label": "图标" },
+                { "type": "toggle", "name": "status", "val": data.status, "label": "是否启用" },
+            ]
+        }
+
+        function getMenuTree() {
+            Tree.Init({
+                container: $("#tree"),
+                layer: layer,
+                ajaxUrl: '@Url.Action("MenuDo", "Manage")?cmd=list',
+                click: (obj) => {
+                    let id = $(obj).closest(".node").find(".ui.checkbox>input").attr("bind-id");
+                    let sidebarData = {
+                        menuName: "",
+                        menuGroupId: 0,
+                        menuType: 1,
+                        menuCtr: "",
+                        menuAct: "",
+                        menuSort: 0,
+                        menuIcon: "",
+                        status: 1
+                    };
+                    Sidebar.Init({
+                        "title": "编辑菜单",
+                        "data": assignSidebarData(sidebarData),
+                        "event": (container) => {
+                            assignSidebarEvent(container, sidebarData);
+                        }
+                    });
+                }
+            });
+        }
+
+
+
+        function submitForm(container, dropdownMenuType, inputMctr, inputMact, inputIcon) {
+            $.fn.form.settings.rules.menuCtr = function () {
+                let type = dropdownMenuType.dropdown("get value");
+                //如果是菜单类型
+                if (type == 2 && Base.isEmpty(inputMctr.val())) {
+                    return false;
+                }
+                return true;
+            };
+            $.fn.form.settings.rules.menuAct = function () {
+                let type = dropdownMenuType.dropdown("get value");
+                //如果是菜单类型
+                if (type == 2 && Base.isEmpty(inputMact.val())) {
+                    return false;
+                }
+                return true;
+            };
+            $.fn.form.settings.rules.menuIcon = function () {
+                let type = dropdownMenuType.dropdown("get value");
+                //如果是目录类型
+                if (type == 1 && Base.isEmpty(inputIcon.val())) {
+                    return false;
+                }
+                return true;
+            };
+            Form.Sidebar({
+                form: container.find(".ui.form"),
+                layer: layer,
+                ajaxUrl: '@Url.Action("MenuDo", "Manage")',
+                fields: {
+                    menuName: {
+                        identifier: "menuName",
+                        rules: [{ type: "empty", prompt: "请输入菜单名称" }]
+                    },
+                    menuCtr: {
+                        identifier: "menuCtr",
+                        rules: [{ type: 'menuCtr', prompt: 'controller名称不得为空' }]
+                    },
+                    menuAct: {
+                        identifier: "menuAct",
+                        rules: [{ type: 'menuAct', prompt: 'action名称不得为空' }]
+                    },
+                    menuIcon: {
+                        identifier: "menuIcon",
+                        rules: [{ type: 'menuIcon', prompt: '图标类名不得为空' }]
+                    }
+                },
+                before: (fields) => {
+                    if (fields.hasOwnProperty("status")) {
+                        fields['status'] = fields['status'] == "on" ? 1 : 0;
+                    }
+                    return fields;
+                },
+                success: (data) => {
+                    getMenuTree();
+                    layer.msg("操作成功", { icon: 1 });
+                }
+            });
+        }
+
+        function setMenuGroupVal(menuGroup, value, menuType) {
+            let onChange = function (v) {
+                if (v > 0) {
+                    menuType.dropdown("set selected", "2").addClass("disabled");
+                } else {
+                    menuType.removeClass("disabled");
+                }
+            };
+            onChange(value);
+            menuGroup.dropdown("set selected", value).dropdown({
+                onChange: function (value) {
+                    onChange(value);
+                }
+            });
+        }
+
+        function setMenuTypeVal(menuType, value, menuCtr, menuAct, menuIcon) {
+            let onChange = function (v) {
+                if (v == 1) {
+                    menuCtr.parents(".field").hide();
+                    menuAct.parents(".field").hide();
+                    menuIcon.parents(".field").show();
+                } else {
+                    menuCtr.parents(".field").show();
+                    menuAct.parents(".field").show();
+                    menuIcon.parents(".field").hide();
+                }
+            };
+            onChange(value);
+            menuType.dropdown("set selected", value).dropdown({
+                onChange: function (value) {
+                    onChange(value);
+                }
+            });
+        }
+    </script>
+}
+
+<div class="sixteen wide column">
+    <div class="ui tiny buttons">
+        <button class="ui blue button" bind-cmd="add">添加</button>
+        <div class="or"></div>
+        <button class="ui button" bind-cmd="dels">删除</button>
+    </div>
+</div>
+<div class="sixteen wide column">
+    <div class="ui vertical menu" id="tree"></div>
+</div>

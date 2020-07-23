@@ -1,0 +1,56 @@
+﻿@import "tree.css";
+@import "sidebar.css";
+@import "menu.css";
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+.ui.form > .field > label {
+    font-weight: normal;
+}
+
+.ui.button, .ui.basic.button {
+    border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+}
+
+
+.main.pusher {
+    padding: 55px 15px 0 265px;
+    transform: none !important;
+}
+
+
+.main > .left {
+    width: 250px;
+    overflow: hidden;
+    outline: none;
+    background: #F5F5F5;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    z-index: -1000;
+    overflow-y: auto;
+    border-right: solid 1px #DEDEDE;
+}
+
+
+.main > .right {
+    width: 100%;
+}
+
+.main > .right > .column {
+    margin-bottom: 15px;
+}
+
+.main > .right .ui.breadcrumb {
+    padding: 1rem;
+    background-color: #F5F5F5;
+    display: block;
+    border-left: solid 2px #4CAAF9;
+}

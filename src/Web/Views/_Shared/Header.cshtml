@@ -1,0 +1,31 @@
+﻿<div class="ui top fixed menu">
+    <a class="item" href="/">
+        <i class="inverted blue big braille icon"></i>
+    </a>
+    <div class="right menu">
+        <a class="icon item" title="系统设置" href="@Url.Action("SysConfig", "Manage")">
+            <i class="icon setting"></i>
+        </a>
+        <a class="icon item" title="管理员设置" href="@Url.Action("AdminList", "Manage")">
+            <i class="icon address card outline"></i>
+        </a>
+        <a class="icon item" title="管理组设置" href="@Url.Action("GroupList", "Manage")">
+            <i class="icon group"></i>
+        </a>
+        <div class="ui pointing dropdown icon item" title="用户设置">
+            <i class="icon user circle outline"></i>
+            <i class="icon caret down"></i>
+            <div class="menu">
+                <a class="item" onclick="return modifyInfo();" href="javascript:void(0);" title="修改信息"><i class="icon info"></i>修改信息</a>
+                <a class="item" href="@Url.Action("AdminLogList", "Manage")" title="登录日志"><i class="icon file"></i>操作日志</a>
+                <div class="divider"></div>
+                <a class="item" onclick="return logout();" href="javascript:void(0);" title="退出登录"><i class="icon power off"></i>退出登录</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $(".ui.menu>.right.menu>.ui.dropdown.item").dropdown();
+    });
+</script>
