@@ -1,111 +1,105 @@
-﻿class Tree extends Base {
-    public static Init(param: any = {}) {
-        if (!param.hasOwnProperty("container")) {
-            return false;
-        }
-        if (!param.hasOwnProperty("layer")) {
-            return false;
-        }
-        let that = this;
-        if (!param.hasOwnProperty("data")) {
-            if (!param.hasOwnProperty("ajaxUrl")) {
-                return false;
-            }
-            $.ajax({
-                url: param['ajaxUrl'],
-                type: "get",
-                dataType: "json",
-                success: (rs) => {
-                    param['data'] = rs['data'];
-                    that.createCheckBox(param);
-                },
-                error: (request) => {
-                    if (param.hasOwnProperty("error") && typeof (param["error"]) === "function") {
-                        param["error"](request.responseJSON.data);
-                    } else {
-                        param["layer"].msg(request.responseJSON.msg, {icon: 2});
-                    }
-                },
-                complete: (request) => {
-                    if (param.hasOwnProperty("complete") && typeof (param["complete"]) === "function") {
-                        param["complete"](request.responseJSON.data);
-                    }
-                }
-            });
-        } else {
-            that.createCheckBox(param);
-        }
-    }
+﻿class MenuAttr {
+    /**
+     * ID
+     */
+    id: number;
+    /**
+     * 显示文字
+     */
+    text: string;
+    /**
+     * 显示图标
+     */
+    icon: string;
+    /**
+     * 状态
+     */
+    status: number;
+    /**
+     * 类型
+     */
+    type: number;
+    /**
+     * 其它属性
+     */
+    other: any;
+    /**
+     * 子节点
+     */
+    child: Array<MenuAttr>;
+}
 
-    private static createCheckBox(param: any = {}) {
-        if (param['data'].length <= 0) {
-            return true;
-        }
-        let isShowChild = false;
-        if (param.hasOwnProperty("showChild") && param['showChild'] == true) {
-            isShowChild = true;
-        }
-        let html = this.getNodeHtml(param['data'], isShowChild);
-        let container = param['container'];
-        container.html(html);
-        //当选择/取消选择勾选框时
-        container.find(".ui.checkbox").checkbox({
-            fireOnInit: true,
-            onChange(): void {
-                $.each($(this).parents(".child"), (idx: number, child) => {
-                    let num = 0;
-                    let childObj = $(child).find(".ui.checkbox");
-                    $.each(childObj, (i, item) => {
-                        if ($(item).checkbox("is checked")) {
-                            num += 1;
-                        }
-                    });
-                    let parentObj = $(child).prev(".node").find(".ui.checkbox");
-                    //如果全部未选中，则是未选中状态
-                    if (num == 0) {
-                        parentObj.checkbox("set unchecked").find("input[type='checkbox']").attr({"bind-select": 0});
-                    } else {
-                        //如果部分选中，则是半掩状态
-                        if (num < childObj.length) {
-                            parentObj.checkbox("set indeterminate").find("input[type='checkbox']").attr({"bind-select": 0});
-                        } else {
-                            parentObj.checkbox("set checked").find("input[type='checkbox']").attr({"bind-select": 1});
-                        }
-                    }
-                });
-            },
-            onChecked(): void {
-                $(this).attr({"bind-select": 1});
-                let obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
-                obj.checkbox("set checked").find("input[type='checkbox']").attr({"bind-select": 1});
-            },
-            onUnchecked(): void {
-                $(this).attr({"bind-select": 0});
-                let obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
-                obj.checkbox("set unchecked").find("input[type='checkbox']").attr({"bind-select": 0});
-            }
-        });
-        //更改展开/关闭时的图标
-        container.find(".folder").on("click", function () {
-            let that = this;
-            $(this).closest(".node").next(".child").toggle('fast', function () {
-                $(this).css("display") == "block" ? $(that).addClass("open") : $(that).removeClass("open");
-            });
-        });
-        //如果有点击事件
-        if (param.hasOwnProperty("click") && typeof (param['click']) == "function") {
-            container.find(".node>label").on("click", function () {
-                param['click'](this);
-            });
-        }
-    }
+class Tree extends Base {
+    /**
+     * 主容器名称
+     */
+    public container: JQuery;
+    /**
+     * 弹出窗口控件
+     */
+    public layer: any;
+
+    public data: Array<MenuAttr>;
 
     /**
-     * 获取节点的Class名称
-     * @param idx
-     * @param data
+     * 是否显示子节点
      */
-    private static getNodeClassName(idx: number = 0, data: any = {}) {
+    public showChild: boolean = true;
+
+    /**
+     * 勾选类型，1=单选框，2=多选框
+     */
+    public type: number = 1;
+
+    public event: any = null;
+
+
+    constructor(param: any = {}) {
+        super();
+        if (param.hasOwnProperty("debug") && param["debug"] == true) {
+            super.debug(param["debug"]);
+        }
+        if (!param.hasOwnProperty("container")) {
+            super.log("参数：container 未设置");
+            return;
+        }
+        this.container = param["container"];
+        if (!param.hasOwnProperty("layer")) {
+            super.log("参数：layer 未设置");
+            return;
+        }
+        this.layer = param["layer"];
+        if (!param.hasOwnProperty("data") && !param.hasOwnProperty("ajax")) {
+            super.log("参数：data||ajax 未设置");
+            return;
+        }
+        if (param.hasOwnProperty("type") && param["type"] == 2) {
+            this.type = param["type"];
+        }
+        if (param.hasOwnProperty("click") && typeof (param['click']) == "function") {
+            this.event = param["click"];
+        }
+        if (param.hasOwnProperty("data")) {
+            this.data = param["data"];
+            this.init();
+        } else {
+            let ajaxParam = param["ajax"];
+            $.ajax({
+                url: ajaxParam["url"],
+                type: ajaxParam["type"],
+                dataType: ajaxParam["dataType"],
+                success: (rs) => {
+                    this.data = rs["data"];
+                    this.init();
+                },
+                error: (request) => {
+                    this.layer.msg(request.responseJSON.msg, {icon: 2});
+                }
+            });
+        }
+    }
+
+    private static getClassName(idx: number = 0, data: any = {}) {
         let name = "";
         if (data.length == 1) {
             name += "last";
@@ -121,48 +115,111 @@
         return name;
     }
 
-    /**
-     * 创建节点的HTML
-     * @param hasChild
-     * @param className
-     * @param data
-     */
-    private static createNodeHtml(hasChild: boolean = false, className: string = "", data: any = {}) {
-        let html = `<div class="${className} node">`;
+    private getNodeHtml(data: MenuAttr, hasChild: boolean = true, className: string = "") {
+        let html = `<div class="${className} node" bind-id="${data.id}">`;
         html += `<span class="separate"></span>`;
-        html += `<div class="ui checkbox" style="vertical-align: middle; width: 20px;">`;
-        html += `<input type="checkbox" id="checkbox_${data['id']}" bind-id="${data['id']}" bind-select="0">`;
-        html += `</div>`;
-        if (data.hasOwnProperty("type") && data['type'] == 1) {
-            html += hasChild ? `<span class="folder"></span>` : `<span class="empty folder"></span>`;
+        //如果是目录
+        if (data.type == 1) {
+            html += `<i style="line-height: 15px; cursor: pointer;" class="icon folder ${(this.showChild && hasChild) ? "open" : ""} outline" bind-tag="folder"></i>`;
         } else {
-            html += `<span class="file"></span>`;
+            html += `<i style="line-height: 15px;" class="icon file alternate outline"></i>`;
         }
-        if (data['status'] == 1) {
-            html += `<label>${data['name']}</label>`;
+        //如果是单选框
+        if (this.type == 1) {
+            html += `<div class="ui radio checkbox" style="width: 18px;">
+                        <input type="radio" id="checkbox_${data.id}" name="treeCheckBox">
+                    </div>`;
         } else {
-            html += `<label class="disabled">${data['name']}</label>`;
+            html += `<div class="ui checkbox" style="width: 20px;">
+                        <input type="checkbox" id="checkbox_${data.id}" name="treeCheckBox">
+                    </div>`;
+        }
+        //如果是目录，并且有图标
+        if (data.type == 1 && !super.isEmpty(data.icon)) {
+            html += `<i style="line-height: 15px;" class="icon ${data.icon}"></i>`;
+        }
+        if (data.status == 1) {
+            html += `<label>${data.text}</label>`;
+        } else {
+            html += `<label class="disabled">${data.text}</label>`;
         }
         html += `</div>`;
         return html;
     }
 
-    /**
-     * 获取节点的HTML
-     * @param data
-     * @param isShow
-     */
-    private static getNodeHtml(data: any = {}, isShow: boolean = false) {
-        let that = this;
+    private getNode(data: Array<MenuAttr> = []) {
         let html = "";
-        $.each(data, (idx: number, item) => {
-            let hasChild = item.hasOwnProperty("child") && item['child'].length > 0;
-            let className = that.getNodeClassName(idx, data);
-            html += that.createNodeHtml(hasChild, className, item);
+        if (data.length <= 0) {
+            return html;
+        }
+        for (let i = 0; i < data.length; i++) {
+            let hasChild = data[i].hasOwnProperty("child") && data[i].child.length > 0;
+            let className = Tree.getClassName(i, data);
+            html += this.getNodeHtml(data[i], hasChild, className);
             if (hasChild) {
-                html += `<div class="${className} child" style="${isShow ? "" : "display:none;"}">${that.getNodeHtml(item['child'])}</div>`;
+                html += `<div class="${className} child" style="${this.showChild ? "" : "display:none;"}">${this.getNode(data[i].child)}</div>`;
+            }
+        }
+        return html;
+    }
+
+    private init() {
+        let that = this;
+        let html = this.getNode(this.data);
+        this.container.html(html);
+        //当选择/取消选择勾选框时
+        this.container.find(".ui.checkbox").checkbox({
+            fireOnInit: true,
+            onChange(): void {
+                if (that.type == 2) {
+                    $.each($(this).parents(".child"), (idx: number, child) => {
+                        let num = 0;
+                        let childObj = $(child).find(".ui.checkbox");
+                        $.each(childObj, (i, item) => {
+                            if ($(item).checkbox("is checked")) {
+                                num += 1;
+                            }
+                        });
+                        let parentObj = $(child).prev(".node").find(".ui.checkbox");
+                        //如果全部未选中，则是未选中状态
+                        if (num == 0) {
+                            parentObj.checkbox("set unchecked");
+                        } else {
+                            //如果部分选中，则是半掩状态
+                            if (num < childObj.length) {
+                                parentObj.checkbox("set indeterminate");
+                            } else {
+                                parentObj.checkbox("set checked");
+                            }
+                        }
+                    });
+                }
+            },
+            onChecked(): void {
+                if (that.type == 2) {
+                    let obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
+                    obj.checkbox("set checked");
+                }
+            },
+            onUnchecked(): void {
+                if (that.type == 2) {
+                    let obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
+                    obj.checkbox("set unchecked");
+                }
             }
         });
-        return html;
+        //更改展开/关闭时的图标
+        this.container.find("i[bind-tag='folder']").on("click", function () {
+            let t = this;
+            $(this).closest(".node").next(".child").toggle('fast', function () {
+                $(this).css("display") == "block" ? $(t).addClass("open") : $(t).removeClass("open");
+            });
+        });
+        //如果有点击事件
+        if (this.event != null && typeof (this.event) == "function") {
+            this.container.find(".node>label").on("click", function () {
+                that.event(this);
+            });
+        }
     }
 }

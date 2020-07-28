@@ -107,7 +107,10 @@ namespace CoolShop.Web.Services
             });
             foreach (var model in dic.Values.Where(t => dic.ContainsKey(t.Pid)))
             {
-                dic[model.Pid].Child.Add(model);
+                dic[model.Pid].Child.Add(new MenuTreeEntity
+                {
+                    
+                });
             }
 
             return dic.Values.Where(t => t.Pid == 0);

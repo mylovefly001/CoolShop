@@ -27,7 +27,7 @@
                     }
                 });
             });
-            getMenuTree();
+            treeInit();
         });
 
         /**
@@ -82,6 +82,37 @@
                 { "type": "icon", "name": "menuIcon", "val": data.menuIcon, "label": "图标" },
                 { "type": "toggle", "name": "status", "val": data.status, "label": "是否启用" },
             ]
+        }
+        
+        function treeInit() {
+            let tree = new Tree({
+                "debug": true,
+                "type": 2,
+                "container": $("#tree"),
+                "layer": layer,
+                "data": [
+                    {
+                        "id": 1, "pid": 0, "text": "1111", "icon": "", "status": 1, "sort": 5, "type": 1, "child": [
+                            { "id": 6, "pid": 1, "text": "wqewASe", "icon": "caret square left", "status": 1, "sort": 1 },
+                            { "id": 7, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1 },
+                            { "id": 8, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1 },
+                            {
+                                "id": 9, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1, "type": 1, "child": [
+                                    { "id": 7, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1 },
+                                    { "id": 8, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1 },
+                                    { "id": 9, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1 },
+
+                                ]
+                            },
+                            { "id": 10, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1 },
+                            { "id": 11, "pid": 1, "text": "wqeSASASSwe", "icon": "caret square left", "status": 1, "sort": 1 },
+                        ]
+                    },
+                    { "id": 2, "pid": 0, "text": "afssdfg", "icon": "question circle", "type": 1, "status": 1, "sort": 2 },
+                    { "id": 4, "pid": 0, "text": "wqewe", "icon": "caret square left", "type": 2, "status": 1, "sort": 1 },
+                    { "id": 5, "pid": 0, "text": "asdfsd", "icon": "arrow circle up", "type": 1, "status": 1, "sort": 3 }
+                ]
+            });
         }
 
         function getMenuTree() {

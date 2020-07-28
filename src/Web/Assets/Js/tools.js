@@ -13,12 +13,17 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var Base = /** @class */ (function () {
     function Base() {
+        this._debug = false;
     }
+    Base.prototype.debug = function (t) {
+        if (t === void 0) { t = false; }
+        this._debug = t;
+    };
     /**
      * 校验字符串是否为空
      * @param str
      */
-    Base.isEmpty = function (str) {
+    Base.prototype.isEmpty = function (str) {
         if (str === void 0) { str = ""; }
         return str == '' || str == undefined || str.replace(/(^\s*)|(\s*$)/g, "") == "";
     };
@@ -29,6 +34,12 @@ var Base = /** @class */ (function () {
     Base.formatNumber = function (n) {
         n = n.toString();
         return n[1] ? n : '0' + n;
+    };
+    Base.prototype.log = function (str) {
+        if (str === void 0) { str = ""; }
+        if (this.debug && !this.isEmpty(str)) {
+            console.debug(str);
+        }
     };
     return Base;
 }());
@@ -280,122 +291,70 @@ var Sidebar = /** @class */ (function (_super) {
     };
     return Sidebar;
 }(Base));
+var MenuAttr = /** @class */ (function () {
+    function MenuAttr() {
+    }
+    return MenuAttr;
+}());
 var Tree = /** @class */ (function (_super) {
     __extends(Tree, _super);
-    function Tree() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Tree.Init = function (param) {
+    function Tree(param) {
         if (param === void 0) { param = {}; }
+        var _this = _super.call(this) || this;
+        /**
+         * 是否显示子节点
+         */
+        _this.showChild = true;
+        /**
+         * 勾选类型，1=单选框，2=多选框
+         */
+        _this.type = 1;
+        _this.event = null;
+        if (param.hasOwnProperty("debug") && param["debug"] == true) {
+            _super.prototype.debug.call(_this, param["debug"]);
+        }
         if (!param.hasOwnProperty("container")) {
-            return false;
+            _super.prototype.log.call(_this, "参数：container 未设置");
+            return _this;
         }
+        _this.container = param["container"];
         if (!param.hasOwnProperty("layer")) {
-            return false;
+            _super.prototype.log.call(_this, "参数：layer 未设置");
+            return _this;
         }
-        var that = this;
-        if (!param.hasOwnProperty("data")) {
-            if (!param.hasOwnProperty("ajaxUrl")) {
-                return false;
-            }
+        _this.layer = param["layer"];
+        if (!param.hasOwnProperty("data") && !param.hasOwnProperty("ajax")) {
+            _super.prototype.log.call(_this, "参数：data||ajax 未设置");
+            return _this;
+        }
+        if (param.hasOwnProperty("type") && param["type"] == 2) {
+            _this.type = param["type"];
+        }
+        if (param.hasOwnProperty("click") && typeof (param['click']) == "function") {
+            _this.event = param["click"];
+        }
+        if (param.hasOwnProperty("data")) {
+            _this.data = param["data"];
+            _this.init();
+        }
+        else {
+            var ajaxParam = param["ajax"];
             $.ajax({
-                url: param['ajaxUrl'],
-                type: "get",
-                dataType: "json",
+                url: ajaxParam["url"],
+                type: ajaxParam["type"],
+                dataType: ajaxParam["dataType"],
                 success: function (rs) {
-                    param['data'] = rs['data'];
-                    that.createCheckBox(param);
+                    _this.data = rs["data"];
+                    _this.init();
                 },
                 error: function (request) {
-                    if (param.hasOwnProperty("error") && typeof (param["error"]) === "function") {
-                        param["error"](request.responseJSON.data);
-                    }
-                    else {
-                        param["layer"].msg(request.responseJSON.msg, { icon: 2 });
-                    }
-                },
-                complete: function (request) {
-                    if (param.hasOwnProperty("complete") && typeof (param["complete"]) === "function") {
-                        param["complete"](request.responseJSON.data);
-                    }
+                    _this.layer.msg(request.responseJSON.msg, { icon: 2 });
                 }
             });
         }
-        else {
-            that.createCheckBox(param);
-        }
-    };
-    Tree.createCheckBox = function (param) {
-        if (param === void 0) { param = {}; }
-        if (param['data'].length <= 0) {
-            return true;
-        }
-        var isShowChild = false;
-        if (param.hasOwnProperty("showChild") && param['showChild'] == true) {
-            isShowChild = true;
-        }
-        var html = this.getNodeHtml(param['data'], isShowChild);
-        var container = param['container'];
-        container.html(html);
-        //当选择/取消选择勾选框时
-        container.find(".ui.checkbox").checkbox({
-            fireOnInit: true,
-            onChange: function () {
-                $.each($(this).parents(".child"), function (idx, child) {
-                    var num = 0;
-                    var childObj = $(child).find(".ui.checkbox");
-                    $.each(childObj, function (i, item) {
-                        if ($(item).checkbox("is checked")) {
-                            num += 1;
-                        }
-                    });
-                    var parentObj = $(child).prev(".node").find(".ui.checkbox");
-                    //如果全部未选中，则是未选中状态
-                    if (num == 0) {
-                        parentObj.checkbox("set unchecked").find("input[type='checkbox']").attr({ "bind-select": 0 });
-                    }
-                    else {
-                        //如果部分选中，则是半掩状态
-                        if (num < childObj.length) {
-                            parentObj.checkbox("set indeterminate").find("input[type='checkbox']").attr({ "bind-select": 0 });
-                        }
-                        else {
-                            parentObj.checkbox("set checked").find("input[type='checkbox']").attr({ "bind-select": 1 });
-                        }
-                    }
-                });
-            },
-            onChecked: function () {
-                $(this).attr({ "bind-select": 1 });
-                var obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
-                obj.checkbox("set checked").find("input[type='checkbox']").attr({ "bind-select": 1 });
-            },
-            onUnchecked: function () {
-                $(this).attr({ "bind-select": 0 });
-                var obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
-                obj.checkbox("set unchecked").find("input[type='checkbox']").attr({ "bind-select": 0 });
-            }
-        });
-        //更改展开/关闭时的图标
-        container.find(".folder").on("click", function () {
-            var that = this;
-            $(this).closest(".node").next(".child").toggle('fast', function () {
-                $(this).css("display") == "block" ? $(that).addClass("open") : $(that).removeClass("open");
-            });
-        });
-        //如果有点击事件
-        if (param.hasOwnProperty("click") && typeof (param['click']) == "function") {
-            container.find(".node>label").on("click", function () {
-                param['click'](this);
-            });
-        }
-    };
-    /**
-     * 获取节点的Class名称
-     * @param idx
-     * @param data
-     */
-    Tree.getNodeClassName = function (idx, data) {
+        return _this;
+    }
+    Tree.getClassName = function (idx, data) {
         if (idx === void 0) { idx = 0; }
         if (data === void 0) { data = {}; }
         var name = "";
@@ -415,55 +374,114 @@ var Tree = /** @class */ (function (_super) {
         }
         return name;
     };
-    /**
-     * 创建节点的HTML
-     * @param hasChild
-     * @param className
-     * @param data
-     */
-    Tree.createNodeHtml = function (hasChild, className, data) {
-        if (hasChild === void 0) { hasChild = false; }
+    Tree.prototype.getNodeHtml = function (data, hasChild, className) {
+        if (hasChild === void 0) { hasChild = true; }
         if (className === void 0) { className = ""; }
-        if (data === void 0) { data = {}; }
-        var html = "<div class=\"" + className + " node\">";
+        var html = "<div class=\"" + className + " node\" bind-id=\"" + data.id + "\">";
         html += "<span class=\"separate\"></span>";
-        html += "<div class=\"ui checkbox\" style=\"vertical-align: middle; width: 20px;\">";
-        html += "<input type=\"checkbox\" id=\"checkbox_" + data['id'] + "\" bind-id=\"" + data['id'] + "\" bind-select=\"0\">";
-        html += "</div>";
-        if (data.hasOwnProperty("type") && data['type'] == 1) {
-            html += hasChild ? "<span class=\"folder\"></span>" : "<span class=\"empty folder\"></span>";
+        //如果是目录
+        if (data.type == 1) {
+            html += "<i style=\"line-height: 15px; cursor: pointer;\" class=\"icon folder " + ((this.showChild && hasChild) ? "open" : "") + " outline\" bind-tag=\"folder\"></i>";
         }
         else {
-            html += "<span class=\"file\"></span>";
+            html += "<i style=\"line-height: 15px;\" class=\"icon file alternate outline\"></i>";
         }
-        if (data['status'] == 1) {
-            html += "<label>" + data['name'] + "</label>";
+        //如果是单选框
+        if (this.type == 1) {
+            html += "<div class=\"ui radio checkbox\" style=\"width: 18px;\">\n                        <input type=\"radio\" id=\"checkbox_" + data.id + "\" name=\"treeCheckBox\">\n                    </div>";
         }
         else {
-            html += "<label class=\"disabled\">" + data['name'] + "</label>";
+            html += "<div class=\"ui checkbox\" style=\"width: 20px;\">\n                        <input type=\"checkbox\" id=\"checkbox_" + data.id + "\" name=\"treeCheckBox\">\n                    </div>";
+        }
+        //如果是目录，并且有图标
+        if (data.type == 1 && !_super.prototype.isEmpty.call(this, data.icon)) {
+            html += "<i style=\"line-height: 15px;\" class=\"icon " + data.icon + "\"></i>";
+        }
+        if (data.status == 1) {
+            html += "<label>" + data.text + "</label>";
+        }
+        else {
+            html += "<label class=\"disabled\">" + data.text + "</label>";
         }
         html += "</div>";
         return html;
     };
-    /**
-     * 获取节点的HTML
-     * @param data
-     * @param isShow
-     */
-    Tree.getNodeHtml = function (data, isShow) {
-        if (data === void 0) { data = {}; }
-        if (isShow === void 0) { isShow = false; }
-        var that = this;
+    Tree.prototype.getNode = function (data) {
+        if (data === void 0) { data = []; }
         var html = "";
-        $.each(data, function (idx, item) {
-            var hasChild = item.hasOwnProperty("child") && item['child'].length > 0;
-            var className = that.getNodeClassName(idx, data);
-            html += that.createNodeHtml(hasChild, className, item);
+        if (data.length <= 0) {
+            return html;
+        }
+        for (var i = 0; i < data.length; i++) {
+            var hasChild = data[i].hasOwnProperty("child") && data[i].child.length > 0;
+            var className = Tree.getClassName(i, data);
+            html += this.getNodeHtml(data[i], hasChild, className);
             if (hasChild) {
-                html += "<div class=\"" + className + " child\" style=\"" + (isShow ? "" : "display:none;") + "\">" + that.getNodeHtml(item['child']) + "</div>";
+                html += "<div class=\"" + className + " child\" style=\"" + (this.showChild ? "" : "display:none;") + "\">" + this.getNode(data[i].child) + "</div>";
+            }
+        }
+        return html;
+    };
+    Tree.prototype.init = function () {
+        var that = this;
+        var html = this.getNode(this.data);
+        this.container.html(html);
+        //当选择/取消选择勾选框时
+        this.container.find(".ui.checkbox").checkbox({
+            fireOnInit: true,
+            onChange: function () {
+                if (that.type == 2) {
+                    $.each($(this).parents(".child"), function (idx, child) {
+                        var num = 0;
+                        var childObj = $(child).find(".ui.checkbox");
+                        $.each(childObj, function (i, item) {
+                            if ($(item).checkbox("is checked")) {
+                                num += 1;
+                            }
+                        });
+                        var parentObj = $(child).prev(".node").find(".ui.checkbox");
+                        //如果全部未选中，则是未选中状态
+                        if (num == 0) {
+                            parentObj.checkbox("set unchecked");
+                        }
+                        else {
+                            //如果部分选中，则是半掩状态
+                            if (num < childObj.length) {
+                                parentObj.checkbox("set indeterminate");
+                            }
+                            else {
+                                parentObj.checkbox("set checked");
+                            }
+                        }
+                    });
+                }
+            },
+            onChecked: function () {
+                if (that.type == 2) {
+                    var obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
+                    obj.checkbox("set checked");
+                }
+            },
+            onUnchecked: function () {
+                if (that.type == 2) {
+                    var obj = $(this).parents(".node").next(".child").find(".ui.checkbox");
+                    obj.checkbox("set unchecked");
+                }
             }
         });
-        return html;
+        //更改展开/关闭时的图标
+        this.container.find("i[bind-tag='folder']").on("click", function () {
+            var t = this;
+            $(this).closest(".node").next(".child").toggle('fast', function () {
+                $(this).css("display") == "block" ? $(t).addClass("open") : $(t).removeClass("open");
+            });
+        });
+        //如果有点击事件
+        if (this.event != null && typeof (this.event) == "function") {
+            this.container.find(".node>label").on("click", function () {
+                that.event(this);
+            });
+        }
     };
     return Tree;
 }(Base));
