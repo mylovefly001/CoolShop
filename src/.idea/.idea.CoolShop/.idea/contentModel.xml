@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\AltMan\AppData\Local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\AltMan\AppData\Local\JetBrains\Rider2020.1\resharper-host\Local\Transient\ReSharperHost\v201\SolutionCaches\_CoolShop.1050903302.00" t="ExcludeRecursive" />
+    <e p="D:\Project\Net\CoolShop\src" t="IncludeFlat">
+      <e p="CoolShop.sln" t="IncludeFlat" />
+      <e p="Core" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Core.csproj" t="IncludeRecursive" />
+        <e p="Entity" t="Include">
+          <e p="MenuTreeEntity.cs" t="Include" />
+          <e p="ResultEntity.cs" t="Include" />
+        </e>
+        <e p="Enum" t="Include">
+          <e p="ErrorEnum.cs" t="Include" />
+          <e p="MenuTypeEnum.cs" t="Include" />
+        </e>
+        <e p="Extend" t="Include">
+          <e p="DbContext.cs" t="Include" />
+          <e p="Exception.cs" t="Include" />
+          <e p="Filter.cs" t="Include" />
+        </e>
+        <e p="Library" t="Include">
+          <e p="Common.cs" t="Include" />
+          <e p="Validate.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Core.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Model" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Model.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Model.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="SysMenuModel.cs" t="Include" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Repository" t="IncludeRecursive">
+        <e p="BaseRepository.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Repository.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Repository.csproj" t="IncludeRecursive" />
+        <e p="SysMenuRepository.cs" t="Include" />
+      </e>
+      <e p="Web" t="IncludeRecursive">
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="Assets" t="Include">
+          <e p="Css" t="Include">
+            <e p="menu.css" t="Include" />
+            <e p="sidebar.css" t="Include" />
+            <e p="style.css" t="Include" />
+            <e p="tree.css" t="Include" />
+          </e>
+          <e p="favicon.ico" t="Include" />
+          <e p="Image" t="Include">
+            <e p="loading.gif" t="Include" />
+            <e p="logo.png" t="Include" />
+          </e>
+          <e p="Js" t="Include">
+            <e p="component" t="Include">
+              <e p="base.ts" t="Include" />
+              <e p="form.ts" t="Include" />
+              <e p="node_modules\@types" t="IncludeRecursive">
+                <e p="jquery" t="IncludeRecursive" />
+                <e p="semantic-ui" t="IncludeRecursive" />
+                <e p="semantic-ui-accordion" t="IncludeRecursive" />
+                <e p="semantic-ui-api" t="IncludeRecursive" />
+                <e p="semantic-ui-checkbox" t="IncludeRecursive" />
+                <e p="semantic-ui-dimmer" t="IncludeRecursive" />
+                <e p="semantic-ui-dropdown" t="IncludeRecursive" />
+                <e p="semantic-ui-embed" t="IncludeRecursive" />
+                <e p="semantic-ui-form" t="IncludeRecursive" />
+                <e p="semantic-ui-modal" t="IncludeRecursive" />
+                <e p="semantic-ui-nag" t="IncludeRecursive" />
+                <e p="semantic-ui-popup" t="IncludeRecursive" />
+                <e p="semantic-ui-progress" t="IncludeRecursive" />
+                <e p="semantic-ui-rating" t="IncludeRecursive" />
+                <e p="semantic-ui-search" t="IncludeRecursive" />
+                <e p="semantic-ui-shape" t="IncludeRecursive" />
+                <e p="semantic-ui-sidebar" t="IncludeRecursive" />
+                <e p="semantic-ui-site" t="IncludeRecursive" />
+                <e p="semantic-ui-sticky" t="IncludeRecursive" />
+                <e p="semantic-ui-tab" t="IncludeRecursive" />
+                <e p="semantic-ui-transition" t="IncludeRecursive" />
+                <e p="semantic-ui-visibility" t="IncludeRecursive" />
+                <e p="sizzle" t="IncludeRecursive" />
+              </e>
+              <e p="package-lock.json" t="Include" />
+              <e p="package.json" t="Include" />
+              <e p="sidebar.ts" t="Include" />
+              <e p="Tree.ts" t="Include" />
+              <e p="tsconfig.json" t="Include" />
+            </e>
+            <e p="jquery-3.4.1.min.js" t="Include" />
+            <e p="tools.js" t="Include" />
+            <e p="tools.js.map" t="Include" />
+          </e>
+          <e p="Library" t="Include">
+            <e p="layer" t="Include">
+              <e p="layer.js" t="Include" />
+              <e p="mobile" t="Include">
+                <e p="layer.js" t="Include" />
+                <e p="need" t="Include">
+                  <e p="layer.css" t="Include" />
+                </e>
+              </e>
+              <e p="theme" t="Include">
+                <e p="default" t="Include">
+                  <e p="icon-ext.png" t="Include" />
+                  <e p="icon.png" t="Include" />
+                  <e p="layer.css" t="Include" />
+                  <e p="loading-0.gif" t="Include" />
+                  <e p="loading-1.gif" t="Include" />
+                  <e p="loading-2.gif" t="Include" />
+                </e>
+              </e>
+            </e>
+            <e p="semantic" t="Include">
+              <e p=".versions" t="Include" />
+              <e p="components" t="Include">
+                <e p="accordion.css" t="Include" />
+                <e p="accordion.js" t="Include" />
+                <e p="accordion.min.css" t="Include" />
+                <e p="accordion.min.js" t="Include" />
+                <e p="ad.css" t="Include" />
+                <e p="ad.min.css" t="Include" />
+                <e p="api.js" t="Include" />
+                <e p="api.min.js" t="Include" />
+                <e p="breadcrumb.css" t="Include" />
+                <e p="breadcrumb.min.css" t="Include" />
+                <e p="button.css" t="Include" />
+                <e p="button.min.css" t="Include" />
+                <e p="card.css" t="Include" />
+                <e p="card.min.css" t="Include" />
+                <e p="checkbox.css" t="Include" />
+                <e p="checkbox.js" t="Include" />
+                <e p="checkbox.min.css" t="Include" />
+                <e p="checkbox.min.js" t="Include" />
+                <e p="colorize.js" t="Include" />
+                <e p="colorize.min.js" t="Include" />
+                <e p="comment.css" t="Include" />
+                <e p="comment.min.css" t="Include" />
+                <e p="container.css" t="Include" />
+                <e p="container.min.css" t="Include" />
+                <e p="dimmer.css" t="Include" />
+                <e p="dimmer.js" t="Include" />
+                <e p="dimmer.min.css" t="Include" />
+                <e p="dimmer.min.js" t="Include" />
+                <e p="divider.css" t="Include" />
+                <e p="divider.min.css" t="Include" />
+                <e p="dropdown.css" t="Include" />
+                <e p="dropdown.js" t="Include" />
+                <e p="dropdown.min.css" t="Include" />
+                <e p="dropdown.min.js" t="Include" />
+                <e p="embed.css" t="Include" />
+                <e p="embed.js" t="Include" />
+                <e p="embed.min.css" t="Include" />
+                <e p="embed.min.js" t="Include" />
+                <e p="feed.css" t="Include" />
+                <e p="feed.min.css" t="Include" />
+                <e p="flag.css" t="Include" />
+                <e p="flag.min.css" t="Include" />
+                <e p="form.css" t="Include" />
+                <e p="form.js" t="Include" />
+                <e p="form.min.css" t="Include" />
+                <e p="form.min.js" t="Include" />
+                <e p="grid.css" t="Include" />
+                <e p="grid.min.css" t="Include" />
+                <e p="header.css" t="Include" />
+                <e p="header.min.css" t="Include" />
+                <e p="icon.css" t="Include" />
+                <e p="icon.min.css" t="Include" />
+                <e p="image.css" t="Include" />
+                <e p="image.min.css" t="Include" />
+                <e p="input.css" t="Include" />
+                <e p="input.min.css" t="Include" />
+                <e p="item.css" t="Include" />
+                <e p="item.min.css" t="Include" />
+                <e p="label.css" t="Include" />
+                <e p="label.min.css" t="Include" />
+                <e p="list.css" t="Include" />
+                <e p="list.min.css" t="Include" />
+                <e p="loader.css" t="Include" />
+                <e p="loader.min.css" t="Include" />
+                <e p="menu.css" t="Include" />
+                <e p="menu.min.css" t="Include" />
+                <e p="message.css" t="Include" />
+                <e p="message.min.css" t="Include" />
+                <e p="modal.css" t="Include" />
+                <e p="modal.js" t="Include" />
+                <e p="modal.min.css" t="Include" />
+                <e p="modal.min.js" t="Include" />
+                <e p="nag.css" t="Include" />
+                <e p="nag.js" t="Include" />
+                <e p="nag.min.css" t="Include" />
+                <e p="nag.min.js" t="Include" />
+                <e p="placeholder.css" t="Include" />
+                <e p="placeholder.min.css" t="Include" />
+                <e p="popup.css" t="Include" />
+                <e p="popup.js" t="Include" />
+                <e p="popup.min.css" t="Include" />
+                <e p="popup.min.js" t="Include" />
+                <e p="progress.css" t="Include" />
+                <e p="progress.js" t="Include" />
+                <e p="progress.min.css" t="Include" />
+                <e p="progress.min.js" t="Include" />
+                <e p="rail.css" t="Include" />
+                <e p="rail.min.css" t="Include" />
+                <e p="rating.css" t="Include" />
+                <e p="rating.js" t="Include" />
+                <e p="rating.min.css" t="Include" />
+                <e p="rating.min.js" t="Include" />
+                <e p="reset.css" t="Include" />
+                <e p="reset.min.css" t="Include" />
+                <e p="reveal.css" t="Include" />
+                <e p="reveal.min.css" t="Include" />
+                <e p="search.css" t="Include" />
+                <e p="search.js" t="Include" />
+                <e p="search.min.css" t="Include" />
+                <e p="search.min.js" t="Include" />
+                <e p="segment.css" t="Include" />
+                <e p="segment.min.css" t="Include" />
+                <e p="shape.css" t="Include" />
+                <e p="shape.js" t="Include" />
+                <e p="shape.min.css" t="Include" />
+                <e p="shape.min.js" t="Include" />
+                <e p="sidebar.css" t="Include" />
+                <e p="sidebar.js" t="Include" />
+                <e p="sidebar.min.css" t="Include" />
+                <e p="sidebar.min.js" t="Include" />
+                <e p="site.css" t="Include" />
+                <e p="site.js" t="Include" />
+                <e p="site.min.css" t="Include" />
+                <e p="site.min.js" t="Include" />
+                <e p="state.js" t="Include" />
+                <e p="state.min.js" t="Include" />
+                <e p="statistic.css" t="Include" />
+                <e p="statistic.min.css" t="Include" />
+                <e p="step.css" t="Include" />
+                <e p="step.min.css" t="Include" />
+                <e p="sticky.css" t="Include" />
+                <e p="sticky.js" t="Include" />
+                <e p="sticky.min.css" t="Include" />
+                <e p="sticky.min.js" t="Include" />
+                <e p="tab.css" t="Include" />
+                <e p="tab.js" t="Include" />
+                <e p="tab.min.css" t="Include" />
+                <e p="tab.min.js" t="Include" />
+                <e p="table.css" t="Include" />
+                <e p="table.min.css" t="Include" />
+                <e p="transition.css" t="Include" />
+                <e p="transition.js" t="Include" />
+                <e p="transition.min.css" t="Include" />
+                <e p="transition.min.js" t="Include" />
+                <e p="video.css" t="Include" />
+                <e p="video.js" t="Include" />
+                <e p="video.min.css" t="Include" />
+                <e p="video.min.js" t="Include" />
+                <e p="visibility.js" t="Include" />
+                <e p="visibility.min.js" t="Include" />
+                <e p="visit.js" t="Include" />
+                <e p="visit.min.js" t="Include" />
+              </e>
+              <e p="fonts" t="Include">
+                <e p="S6u8w4BMUTPHjxsAUi-qJCY.woff2" t="Include" />
+                <e p="S6u8w4BMUTPHjxsAXC-q.woff2" t="Include" />
+                <e p="S6u9w4BMUTPHh6UVSwaPGR_p.woff2" t="Include" />
+                <e p="S6u9w4BMUTPHh6UVSwiPGQ.woff2" t="Include" />
+                <e p="S6u_w4BMUTPHjxsI5wq_FQft1dw.woff2" t="Include" />
+                <e p="S6u_w4BMUTPHjxsI5wq_Gwft.woff2" t="Include" />
+                <e p="S6uyw4BMUTPHjx4wXg.woff2" t="Include" />
+                <e p="S6uyw4BMUTPHjxAwXjeu.woff2" t="Include" />
+              </e>
+              <e p="fonts.css" t="Include" />
+              <e p="LICENSE" t="Include" />
+              <e p="package.js" t="Include" />
+              <e p="package.json" t="Include" />
+              <e p="README.md" t="Include" />
+              <e p="semantic.css" t="Include" />
+              <e p="semantic.js" t="Include" />
+              <e p="semantic.min.css" t="Include" />
+              <e p="semantic.min.js" t="Include" />
+              <e p="themes" t="Include">
+                <e p="default" t="Include">
+                  <e p="Assets" t="Include">
+                    <e p="fonts" t="Include">
+                      <e p="brand-icons.eot" t="Include" />
+                      <e p="brand-icons.svg" t="Include" />
+                      <e p="brand-icons.ttf" t="Include" />
+                      <e p="brand-icons.woff" t="Include" />
+                      <e p="brand-icons.woff2" t="Include" />
+                      <e p="icons.eot" t="Include" />
+                      <e p="icons.otf" t="Include" />
+                      <e p="icons.svg" t="Include" />
+                      <e p="icons.ttf" t="Include" />
+                      <e p="icons.woff" t="Include" />
+                      <e p="icons.woff2" t="Include" />
+                      <e p="outline-icons.eot" t="Include" />
+                      <e p="outline-icons.svg" t="Include" />
+                      <e p="outline-icons.ttf" t="Include" />
+                      <e p="outline-icons.woff" t="Include" />
+                      <e p="outline-icons.woff2" t="Include" />
+                    </e>
+                    <e p="images" t="Include">
+                      <e p="flags.png" t="Include" />
+                    </e>
+                  </e>
+                </e>
+              </e>
+            </e>
+          </e>
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Controllers" t="Include">
+          <e p="BaseController.cs" t="Include" />
+          <e p="IndexController.cs" t="Include" />
+          <e p="ManageController.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Web.AssemblyInfo.cs" t="Include" />
+              <e p="Web.RazorAssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="Services" t="Include">
+          <e p="BaseService.cs" t="Include" />
+          <e p="ManageService.cs" t="Include" />
+        </e>
+        <e p="Startup.cs" t="Include" />
+        <e p="Views" t="Include">
+          <e p="_Shared" t="Include">
+            <e p="BreadCrumb.cshtml" t="Include" />
+            <e p="Dialog.cshtml" t="Include" />
+            <e p="Header.cshtml" t="Include" />
+            <e p="LeftMenu.cshtml" t="Include" />
+            <e p="Main.cshtml" t="Include" />
+          </e>
+          <e p="Index" t="Include">
+            <e p="Icon.cshtml" t="Include" />
+            <e p="Index.cshtml" t="Include" />
+          </e>
+          <e p="Manage" t="Include">
+            <e p="MenuList.cshtml" t="Include" />
+          </e>
+        </e>
+        <e p="Web.csproj" t="IncludeRecursive" />
+        <e p="Wrappers" t="Include">
+          <e p="SysMenuWrapper.cs" t="Include" />
+        </e>
+      </e>
+    </e>
+  </component>
+</project>
