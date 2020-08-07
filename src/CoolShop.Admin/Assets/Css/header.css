@@ -1,0 +1,40 @@
+﻿.ui.top.fixed.menu {
+    background-color: #4c4f52;
+    border: none;
+}
+
+.ui.top.fixed.menu > .item {
+    color: #FFF;
+    font-size: 1.0rem;
+    padding: 8px;
+}
+
+.ui.top.fixed.menu > .active.item {
+    color: #54c8ff !important;
+}
+
+.ui.top.fixed.menu > .item:hover {
+    color: #54c8ff !important;
+}
+
+.ui.top.fixed.menu > .item::before {
+    background: rgba(34, 36, 38, .1);
+    height: 50%;
+    top: 25%;
+}
+
+.ui.top.fixed.menu > .right.menu > .active.icon.item > i {
+    color: #54c8ff !important;
+}
+
+.ui.top.fixed.menu > .right.menu > .icon.item:hover > i {
+    color: #54c8ff !important;
+}
+
+.ui.top.fixed.menu > .right.menu > .icon.item > i {
+    color: #FFF;
+}
+
+.ui.top.fixed.menu > .right.menu > .dropdown.icon.item > .icon {
+    margin-right: 8px;
+}

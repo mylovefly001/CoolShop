@@ -1,0 +1,206 @@
+﻿<div class="header">
+    <i class="icon chevron left" bind-cmd="return" title="返回"></i>
+    <span>添加菜单</span>
+</div>
+<div class="content">
+    <div class="ui form" id="form1">
+        <div class="field">
+            <label>菜单名称：</label>
+            <input type="text" name="name" placeholder="菜单名称">
+        </div>
+        <div class="field">
+            <label>所属目录：</label>
+            <div class="ui selection dropdown pid">
+                <input type="hidden" name="pid" value="0">
+                <i class="dropdown icon"></i>
+                <div class="text">顶级菜单</div>
+                <div class="menu">
+                    <div class="item" data-value="0">顶级菜单</div>
+                    @foreach (var sysMenu in ViewBag.rsSysMenuList)
+                    {
+                        var disabled = sysMenu.Status == 0 ? "disabled" : "";
+                        <div class="item @disabled" data-value="@sysMenu.Id">@sysMenu.Name</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>菜单类型：</label>
+            <div class="ui selection dropdown type">
+                <input type="hidden" name="type" value="1">
+                <i class="dropdown icon"></i>
+                <div class="text">目录</div>
+                <div class="menu">
+                    <div class="item" data-value="1">目录</div>
+                    <div class="item" data-value="2">菜单</div>
+                </div>
+            </div>
+        </div>
+        <div class="two fields">
+            <div class="field">
+                <label>控制器名：</label>
+                <input type="text" name="mctr" placeholder="控制器名">
+            </div>
+            <div class="field">
+                <label>方法名：</label>
+                <input type="text" name="mact" placeholder="方法名">
+            </div>
+        </div>
+        <div class="field">
+            <label>排序：</label>
+            <input type="text" name="sort" placeholder="数字越大越靠前" style="width: 150px;">
+        </div>
+        <div class="field">
+            <label>图标类名：</label>
+            <div class="ui right labeled left icon input">
+                <i class="folder outline icon"></i>
+                <input type="text" name="icon" placeholder="图标类名">
+                <div class="ui default label" bind-name="divIconLibrary" style="cursor: pointer;">图标库</div>
+            </div>
+        </div>
+        <div class="inline field">
+            <div class="ui toggle checkbox status">
+                <input type="checkbox" name="status" class="hidden">
+                <label>是否启用</label>
+            </div>
+        </div>
+        <input type="hidden" name="cmd" value="add">
+        <input type="hidden" name="id" value="0">
+        <button class="ui fluid blue submit button"><i class="icon save"></i>保存</button>
+    </div>
+</div>
+
+
+<script>
+    let sidebarObj = $(".ui.right.sidebar");
+    let inputName = sidebarObj.find("input[name='name']");
+    let selectPid = sidebarObj.find(".ui.dropdown.pid");
+    let selectType = sidebarObj.find(".ui.dropdown.type");
+    let inputMctr = sidebarObj.find("input[name='mctr']");
+    let inputMact = sidebarObj.find("input[name='mact']");
+    let inputSort = sidebarObj.find("input[name='sort']");
+    let inputIcon = sidebarObj.find("input[name='icon']");
+    let checkboxStatus = sidebarObj.find(".ui.checkbox.status");
+    let inputId = sidebarObj.find("input[name='id']");
+    let inputCmd = sidebarObj.find("input[name='cmd']");
+
+    $.fn.form.settings.rules.menuCtr = function () {
+        let type = selectType.dropdown("get value");
+        //如果是菜单类型
+        if (type == 2 && Base.isEmpty(inputMctr.val())) {
+            return false;
+        }
+        return true;
+    };
+    $.fn.form.settings.rules.menuAct = function () {
+        let type = selectType.dropdown("get value");
+        //如果是目录类型
+        if (type == 2 && Base.isEmpty(inputMact.val())) {
+            return false;
+        }
+        return true;
+    };
+    $.fn.form.settings.rules.menuIcon = function () {
+        let type = selectType.dropdown("get value");
+        //如果是图标
+        if (type == 1 && Base.isEmpty(inputIcon.val())) {
+            return false;
+        }
+        return true;
+    };
+
+    $(function () {
+        From.Sidebar({
+            form: $("#form1"),
+            layer: layer,
+            ajaxUrl: '@Url.Action("MenuDo", "Manage")',
+            fields: {
+                name: {
+                    identifier: "name",
+                    rules: [{ type: "empty", prompt: "请输入菜单名称" }]
+                },
+                mctr: {
+                    identifier: "mctr",
+                    rules: [{ type: 'menuCtr', prompt: 'controller名称不得为空' }]
+                },
+                mact: {
+                    identifier: "mact",
+                    rules: [{ type: 'menuAct', prompt: 'action名称不得为空' }]
+                },
+                icon: {
+                    identifier: "icon",
+                    rules: [{ type: 'menuIcon', prompt: '图标类名不得为空' }]
+                }
+            },
+            before: (fields) => {
+                if (fields.hasOwnProperty("status")) {
+                    fields['status'] = fields['status'] == "on" ? 1 : 0;
+                }
+                return fields;
+            },
+            success: function (data) {
+                initMenuTree();
+            }
+        });
+    });
+
+
+    //设置菜单父项
+    function setMenuListVal(value) {
+        selectPid.find("input[name='pid']").val(value);
+        let onChange = function (v) {
+            if (v > 0) {
+                selectType.dropdown("set selected", "2").addClass("disabled");
+            } else {
+                selectType.removeClass("disabled");
+            }
+        };
+        onChange(value);
+        selectPid.dropdown("set selected", value).dropdown({
+            onChange: function (value) {
+                onChange(value);
+            }
+        });
+    }
+
+    //设置菜单类型
+    function setMenuTypeVal(value) {
+        selectType.find("input[name='type']").val(value);
+        let divMenuCtr = inputMctr.parent(".field");
+        let divMenuAct = inputMact.parent(".field");
+        let divMenuIcon = inputIcon.parents(".field");
+        let onChange = function (v) {
+            if (v == 1) {
+                divMenuCtr.addClass("disabled");
+                divMenuAct.addClass("disabled");
+                divMenuIcon.removeClass("disabled");
+            } else {
+                divMenuCtr.removeClass("disabled");
+                divMenuAct.removeClass("disabled");
+                divMenuIcon.addClass("disabled");
+            }
+        };
+        onChange(value);
+        selectType.dropdown("set selected", value).dropdown({
+            onChange: function (value) {
+                onChange(value);
+            }
+        });
+    }
+
+    function setFormVal(data = null) {
+        sidebarObj.find(".header>span").text(data == null ? "添加菜单" : "编辑菜单");
+        inputId.val(data == null ? 0 : data.id);
+        inputCmd.val(data == null ? "add" : "edit");
+        inputName.val(data == null ? "" : data.name);
+        setMenuListVal(data == null ? 0 : data.pid);
+        setMenuTypeVal(data == null ? 1 : data.type);
+        inputMctr.val(data == null ? "" : data.mctr);
+        inputMact.val(data == null ? "" : data.mact);
+        inputSort.val(data == null ? "" : data.sort);
+        inputIcon.val(data == null ? "" : data.icon);
+        inputIcon.prev("i").removeClass().addClass((data == null ? "" : data.icon) + " icon");
+        let status = data == null ? 0 : data.status;
+        checkboxStatus.checkbox(status == 1 ? "check" : "uncheck");
+    }
+</script>

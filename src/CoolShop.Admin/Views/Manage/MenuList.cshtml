@@ -1,0 +1,123 @@
+﻿@{
+    Layout = "../_Shared/MainLayer";
+    ViewData["title"] = "菜单设置";
+    ViewData["sidebar"] = "Menu";
+}
+<div class="sixteen wide column">
+    <div class="ui small buttons" style="margin-right:15px;">
+        <button class="ui blue button" bind-cmd="add">添加</button>
+        <div class="or"></div>
+        <button class="ui button" bind-cmd="dels">删除</button>
+    </div>
+    <div class="ui small buttons" style="margin-right:15px;">
+        <button class="ui button" onclick="return menu.expand(true);"><i class="icon folder open outline"></i>展开</button>
+        <button class="ui button" onclick="return menu.expand(false);"><i class="icon folder outline"></i>收起</button>
+    </div>
+    <div class="ui small buttons">
+        <button class="ui button" onclick="return menu.select(true);"><i class="icon check circle outline"></i>全选</button>
+        <button class="ui button" onclick="return menu.select(false);"><i class="icon circle outline"></i>取消</button>
+        <button class="ui button" onclick="return initMenuTree();"><i class="icon sync"></i>刷新</button>
+    </div>
+</div>
+<div class="sixteen wide column">
+    <div class="ui vertical segment" id="tree"></div>
+</div>
+<script>
+    let menu = null;
+    $(function () {
+        initMenuTree();
+        $("button[bind-cmd='add']").on("click", () => {
+            showSidebar();
+            setFormVal();
+        });
+        $("button[bind-cmd='dels']").on("click", () => {
+            let ids = menu.getSelectVal();
+            if (ids.length <= 0) {
+                layer.msg("请选择需要删除的菜单项", { icon: 7 });
+                return false;
+            }
+            layer.confirm("确定删除选择的项？", { icon: 3, title: '提示' }, function (confirmAlert) {
+                layer.close(confirmAlert);
+                $.ajax({
+                    url: '@Url.Action("MenuDo", "Manage")',
+                    type: 'POST',
+                    data: { cmd: "dels", ids: JSON.stringify(ids) },
+                    dataType: 'JSON',
+                    success: (rs) => {
+                        initMenuTree();
+                    },
+                    error: (request) => {
+                        if (Base.isEmpty(request.responseText)) {
+                            layer.msg(request.statusText, { icon: 2 });
+                        } else {
+                            layer.msg(request.responseJSON.msg, { icon: 2 });
+                        }
+                    }
+                });
+            });
+        });
+    });
+
+
+        //显示Sidebar
+    function showSidebar() {
+        sidebarObj.sidebar('setting', {
+            defaultTransition: {
+                computer: {
+                    left: 'overlay',
+                    right: 'overlay',
+                    top: 'overlay',
+                    bottom: 'overlay'
+                },
+                mobile: {
+                    left: 'overlay',
+                    right: 'overlay',
+                    top: 'overlay',
+                    bottom: 'overlay'
+                }
+            }
+        }).sidebar("toggle");
+    }
+
+        //初始化菜单树
+    function initMenuTree() {
+        menu = new Menu({
+            checkType: 2,
+            container: $("#tree"),
+            layer: layer,
+            ajax: {
+                url: '@Url.Action("MenuDo", "Manage",new { cmd="tree" })',
+                type: "GET",
+                dataType: "JSON"
+            },
+            nodeEvent: (e) => {
+                let id = parseInt($(e).parent(".node").attr("bind-id"));
+                getMenuItemInfo(id);
+            }
+        });
+    }
+
+        //获取菜单节点的信息并在Sidebar中显示
+    function getMenuItemInfo(id) {
+        sidebarObj.find(".content>.ui.form").addClass("loading");
+        showSidebar();
+        $.ajax({
+            url: '@Url.Action("MenuDo", "Manage")?cmd=info&id=' + id,
+            type: 'GET',
+            dataType: 'JSON',
+            success: (rs) => {
+                setFormVal(rs.data);
+            },
+            error: (request) => {
+                if (Base.isEmpty(request.responseText)) {
+                    layer.msg(request.statusText, { icon: 2 });
+                } else {
+                    layer.msg(request.responseJSON.msg, { icon: 2 });
+                }
+            },
+            complete: (request) => {
+                sidebarObj.find(".content>.ui.form").removeClass("loading");
+            }
+        });
+    }
+</script>

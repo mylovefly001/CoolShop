@@ -1,0 +1,11 @@
+﻿{
+  "compilerOptions": {
+    "module": "AMD",
+    "target": "ES5",
+    "sourceMap": true,
+    "outFile": "../tools.js"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
