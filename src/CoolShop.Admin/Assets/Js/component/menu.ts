@@ -142,6 +142,7 @@ class Menu extends Base {
         } else {
             html += `<label class="disabled">${dataInfo.text}</label>`;
         }
+        html += `<span style="margin: 0 5px; color: #DEDEDE;">[${dataInfo.child.length}]</span>`;
         html += `</div>`;
         return html;
     }

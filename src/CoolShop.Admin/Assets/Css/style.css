@@ -29,6 +29,7 @@ html, body {
     overflow: hidden;
     outline: none;
     background: #F5F5F5;
+    padding-top: 55px;
     position: fixed;
     top: 0;
     bottom: 0;

@@ -1,0 +1,115 @@
+﻿<div class="header">
+    <i class="icon chevron left" bind-cmd="return" title="返回"></i>
+    <span>添加管理员</span>
+</div>
+<div class="content">
+    <div class="ui form" id="form1">
+        <div class="field">
+            <label>管理员名称：</label>
+            <input type="text" name="userName" placeholder="管理员名称：4~16位小写英文字母与数字">
+        </div>
+        <div class="field">
+            <label>真实姓名：</label>
+            <input type="text" name="realName" placeholder="真实姓名">
+        </div>
+        <div class="field">
+            <label>管理组：</label>
+            <div class="ui selection dropdown groupId">
+                <input type="hidden" name="groupId" value="0">
+                <i class="dropdown icon"></i>
+                <div class="text">选择管理组</div>
+                <div class="menu">
+                    <div class="item" data-value="0">选择管理组</div>
+                    @foreach (var adminGroup in ViewBag.rsSysAdminGroupList)
+                    {
+                        var disabled = adminGroup.Status == 0 ? "disabled" : "";
+                        <div class="item @disabled" data-value="@adminGroup.Id">@adminGroup.Name</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>密码：</label>
+            <input type="password" name="passWord" placeholder="管理员密码：8~16位任意字符">
+        </div>
+        <div class="field">
+            <label>确认密码：</label>
+            <input type="password" name="surePass" placeholder="确认密码">
+        </div>
+        <div class="inline field">
+            <div class="ui toggle checkbox status">
+                <input type="checkbox" name="status" class="hidden">
+                <label>是否启用</label>
+            </div>
+        </div>
+        <input type="hidden" name="cmd" value="add">
+        <input type="hidden" name="id" value="0">
+        <button class="ui fluid blue submit button"><i class="icon save"></i>保存</button>
+    </div>
+</div>
+
+
+<script>
+    let sidebarObj = $(".ui.right.sidebar");
+    let userName = sidebarObj.find("input[name='userName']");
+    let realName = sidebarObj.find("input[name='realName']");
+    let selectGroupId = sidebarObj.find(".ui.dropdown.groupId");
+    selectGroupId.dropdown("set selected", selectGroupId.find("input").val());
+    let checkboxStatus = sidebarObj.find(".ui.checkbox.status");
+    let inputId = sidebarObj.find("input[name='id']");
+    let inputCmd = sidebarObj.find("input[name='cmd']");
+
+    $.fn.form.settings.rules.passWord = function () {
+        let passWord = $("input[name='passWord']").val();
+        if (inputCmd.val() == "add") {
+            return !(passWord.length < 8 || passWord.length > 16);
+        }
+        return true;
+    };
+    $(function () {
+        Form.Sidebar({
+            form: $("#form1"),
+            layer: layer,
+            ajaxUrl: '@Url.Action("AdminDo", "Manage")',
+            fields: {
+                userName: {
+                    identifier: "userName",
+                    rules: [{ type: "regExp[/^[a-z0-9_-]{4,16}$/]", prompt: "管理员名称：4~16位小写英文字母与数字" }]
+                },
+                realName: {
+                    identifier: "realName",
+                    rules: [{ type: "empty", prompt: "请输入真实姓名" }]
+                },
+                passWord: {
+                    identifier: "passWord",
+                    rules: [{ type: 'passWord', prompt: '管理员密码：8~16位任意字符' }]
+                },
+                surePass: {
+                    identifier: "surePass",
+                    rules: [{ type: "match[passWord]", prompt: "两次密码不一致" }]
+                }
+            },
+            before: (fields) => {
+                if (fields.hasOwnProperty("status")) {
+                    fields['status'] = fields['status'] == "on" ? 1 : 0;
+                }
+                return fields;
+            },
+            success: function (data) {
+                window.location.reload();
+            }
+        });
+    });
+
+
+    function setFormVal(data = null) {
+        sidebarObj.find(".header>span").text(data == null ? "添加管理员" : "编辑管理员");
+        inputId.val(data == null ? 0 : data.id);
+        inputCmd.val(data == null ? "add" : "edit");
+        userName.val(data == null ? "" : data.userName);
+        realName.val(data == null ? "" : data.realName);
+        selectGroupId.dropdown("set selected", data == null ? 0 : data.groupId);
+        let status = data == null ? 0 : data.status;
+        checkboxStatus.checkbox(status == 1 ? "check" : "uncheck");
+    }
+</script>

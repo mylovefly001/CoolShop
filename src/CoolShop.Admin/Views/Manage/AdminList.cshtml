@@ -1,0 +1,160 @@
+﻿@{
+    Layout = "../_Shared/MainLayer";
+    ViewData["title"] = "管理员设置";
+    ViewData["sidebar"] = "Admin";
+}
+<div class="sixteen wide column">
+    <div class="ui small buttons" style="margin-right:15px;">
+        <button class="ui blue button" bind-cmd="add">添加</button>
+    </div>
+</div>
+<div class="sixteen wide column">
+    <div class="ui vertical segment" id="table">
+        <table class="ui blue selectable celled table">
+            <thead>
+                <tr>
+                    <th style="width: 75px;">ID</th>
+                    <th style="width: 200px;">名称</th>
+                    <th style="width: 200px;">真实名称</th>
+                    <th style="width: 180px;">所属组</th>
+                    <th style="width: 160px;">状态</th>
+                    <th style="width: 200px;">添加时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    let table = null;
+    let adminGroupList = @Html.Raw(CoolShop.Core.Library.Common.EncoderJson(ViewBag.rsSysAdminGroupList));
+    $(function () {
+        $("button[bind-cmd='add']").on("click", () => {
+            showSidebar();
+            setFormVal();
+        });
+        initTable();
+    });
+
+    function showSidebar() {
+        sidebarObj.sidebar('setting', {
+            defaultTransition: {
+                computer: {
+                    left: 'overlay',
+                    right: 'overlay',
+                    top: 'overlay',
+                    bottom: 'overlay'
+                },
+                mobile: {
+                    left: 'overlay',
+                    right: 'overlay',
+                    top: 'overlay',
+                    bottom: 'overlay'
+                }
+            }
+        }).sidebar("toggle");
+    }
+
+
+    function initTable() {
+        table = new Table({
+            container: $("#table"),
+            layer: layer,
+            columns: [
+                { "fields": "id" },
+                { "fields": "userName" },
+                { "fields": "realName" },
+                {
+                    "fields": "groupId", "event": (groupId) => {
+                        for (adminGroup of adminGroupList) {
+                            if (adminGroup.id == groupId) {
+                                return `<label class="ui ${adminGroup["status"] == 1 ? "blue" : ""} label" style="font-size: 12px;">${adminGroup['name']}</label>`;
+                            }
+                        }
+                        return '';
+                    }
+                },
+                {
+                    "fields": "status", "event": (status) => {
+                        let str = `<label class="ui label" style="font-size: 12px;">禁用</label>`;
+                        if (parseInt(status) === 1) {
+                            str = `<label class="ui blue label" style="font-size: 12px;">启用</label>`;
+                        }
+                        return str;
+                    }
+                },
+                { "fields": "createdTime" },
+                {
+                    "fields": "id", "event": (id) => {
+                        return `<div class="ui mini buttons">
+                                        <button class="ui blue button" onclick="return upItem(this);" bind-id="${id}">编辑</button>
+                                        <div class="or"></div>
+                                        <button class="ui button" onclick="return delItem(this);" bind-id="${id}">删除</button>
+                                    </div>`;
+                    }
+                }
+            ],
+            ajax: {
+                url: '@Url.Action("AdminDo", "Manage",new { cmd="list" })',
+                type: "GET",
+                dataType: "JSON"
+            }
+        });
+    }
+
+
+    function upItem(obj) {
+        let id = parseInt($(obj).attr("bind-id"));
+        getAdminInfo(id);
+    }
+
+    function delItem(obj) {
+        let id = parseInt($(obj).attr("bind-id"));
+        layer.confirm("确定删除选择的项？", { icon: 3, title: '提示' }, function (confirmAlert) {
+            layer.close(confirmAlert);
+            $.ajax({
+                url: '@Url.Action("AdminDo", "Manage")',
+                type: 'POST',
+                data: { cmd: "del", id: id },
+                dataType: 'JSON',
+                success: (rs) => {
+                    initTable();
+                },
+                error: (request) => {
+                    if (Base.isEmpty(request.responseText)) {
+                        layer.msg(request.statusText, { icon: 2 });
+                    } else {
+                        layer.msg(request.responseJSON.msg, { icon: 2 });
+                    }
+                }
+            });
+        });
+    }
+
+     function getAdminInfo(id) {
+        sidebarObj.find(".content>.ui.form").addClass("loading");
+        showSidebar();
+        $.ajax({
+            url: '@Url.Action("AdminDo", "Manage")?cmd=info&id=' + id,
+            type: 'GET',
+            dataType: 'JSON',
+            success: (rs) => {
+                setFormVal(rs.data);
+            },
+            error: (request) => {
+                if (Base.isEmpty(request.responseText)) {
+                    layer.msg(request.statusText, { icon: 2 });
+                } else {
+                    layer.msg(request.responseJSON.msg, { icon: 2 });
+                }
+            },
+            complete: (request) => {
+                sidebarObj.find(".content>.ui.form").removeClass("loading");
+            }
+        });
+    }
+
+
+</script>

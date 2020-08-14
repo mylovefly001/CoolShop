@@ -1,1 +1,23 @@
-﻿
+﻿@foreach (var menuDetail in ViewBag.AdminSession.MenuDetail)
+{
+    var hasChild = menuDetail.MenuDetail.Count > 0 ? 1 : 0;
+    <div class="node" bind-child="@hasChild" bind-ctr="@menuDetail.MenuCtr" bind-act="@menuDetail.MenuAct">
+        @if (menuDetail.MenuPid == 0)
+        {
+            if (string.IsNullOrWhiteSpace(menuDetail.MenuIcon))
+            {
+                menuDetail.MenuIcon = menuDetail.MenuType == 1 ? "folder outline" : "file outline";
+            }
+            <i class="@menuDetail.MenuIcon icon"></i>
+        }
+        <span>@menuDetail.MenuName</span>
+        @if (hasChild == 1)
+        {
+            <i class="angle down icon"></i>
+        }
+    </div>
+    if (hasChild==1)
+    {
+        <div></div>
+    }
+}

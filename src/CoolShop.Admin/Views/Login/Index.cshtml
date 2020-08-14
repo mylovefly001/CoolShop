@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>后台管理首页</title>
+    <link href="/Library/semantic/semantic.min.css" rel="stylesheet">
+    <link href="/Css/style.css" rel="stylesheet">
+    <script src="/Js/jquery-3.4.1.min.js"></script>
+    <script src="/Library/semantic/semantic.min.js"></script>
+    <script src="/Library/layer/layer.js"></script>
+    <script src="/Js/tools.js"></script>
+</head>
+<body style="background-color: #F5F5F5;">
+<div class="ui middle aligned centered grid" style="height: 100%; margin-top: 0;">
+    <div class="column" style="max-width: 500px;">
+        <div class="ui blue segment">
+            <div style="text-align: center;">
+                <img alt="logo" src="/Image/logo.png" style="width: 38px; height: 38px; vertical-align: middle;" />
+                <span style="vertical-align: middle;font-size: 24px;color: #3e3e3e;">后台管理登录</span>
+            </div>
+            <div class="ui form" id="form1" style="margin-top: 20px;">
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" name="userName" placeholder="用户名">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                        <input type="password" name="passWord" placeholder="密码">
+                    </div>
+                </div>
+                <input type="hidden" name="cmd" value="login">
+                <button class="ui blue fluid submit button" type="button">
+                    <i class="sign-in icon"></i>
+                    <span>登录</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        Form.Dialog({
+            form: $("#form1"),
+            layer: layer,
+            ajaxUrl: '@Url.Action("Do", "Login")',
+            fields: {
+                userName: {
+                    identifier: "userName",
+                    rules: [{ type: "empty", prompt: "请输入用户名" }]
+                },
+                passWord: {
+                    identifier: "passWord",
+                    rules: [{ type: 'empty', prompt: '请输入密码' }]
+                }
+            },
+            before: (fields) => {
+                if (fields.hasOwnProperty("status")) {
+                    fields['status'] = fields['status'] == "on" ? 1 : 0;
+                }
+                return fields;
+            },
+            success: function (data) {
+                window.location.href = "@ViewBag.redirect";
+            }
+        });
+    });
+</script>
+</body>
+</html>

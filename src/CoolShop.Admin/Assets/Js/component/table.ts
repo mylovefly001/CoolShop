@@ -169,12 +169,12 @@
 
     public init() {
         let trHtml = this.createTrHtml();
-        let firstTr = this.container.find("tbody>tr:first");
-        if (firstTr.length > 0 && firstTr.attr("bind-attr") == "first") {
-            firstTr.after(trHtml);
-        } else {
-            this.container.find("tbody").html(trHtml);
-        }
+        $.each(this.container.find("tbody>tr"), (idx, tr) => {
+            if ($(tr).attr("bind-attr") != "first") {
+                $(tr).remove();
+            }
+        });
+        this.container.find("tbody").append(trHtml);
         if (this.hasPage) {
             let pageObj = this.container.next("#page");
             if (pageObj.length > 0) {
@@ -183,6 +183,8 @@
             let pageHtml = this.createPageHtml();
             this.container.after(pageHtml);
         }
-        this.completeEvent();
+        if (this.completeEvent != null) {
+            this.completeEvent(this.container);
+        }
     }
 }

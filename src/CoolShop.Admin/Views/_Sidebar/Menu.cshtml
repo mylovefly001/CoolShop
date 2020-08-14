@@ -55,7 +55,7 @@
             <div class="ui right labeled left icon input">
                 <i class="folder outline icon"></i>
                 <input type="text" name="icon" placeholder="图标类名">
-                <div class="ui default label" bind-name="divIconLibrary" style="cursor: pointer;">图标库</div>
+                <div class="ui default label" onclick="return selectIcon(this);" style="cursor: pointer;">图标库</div>
             </div>
         </div>
         <div class="inline field">
@@ -110,7 +110,7 @@
     };
 
     $(function () {
-        From.Sidebar({
+        Form.Sidebar({
             form: $("#form1"),
             layer: layer,
             ajaxUrl: '@Url.Action("MenuDo", "Manage")',
@@ -139,7 +139,7 @@
                 return fields;
             },
             success: function (data) {
-                initMenuTree();
+                window.location.reload();
             }
         });
     });
@@ -202,5 +202,15 @@
         inputIcon.prev("i").removeClass().addClass((data == null ? "" : data.icon) + " icon");
         let status = data == null ? 0 : data.status;
         checkboxStatus.checkbox(status == 1 ? "check" : "uncheck");
+    }
+
+    function selectIcon(obj) {
+        layer.open({
+            type: 2,
+            title: "<div><i class='icon add'></i>选择图标</div>",
+            skin: 'layui-layer-lan',
+            area: ['1000px', '550px'], //宽高
+            content: '@Url.Action("Icon", "Index")'
+        });
     }
 </script>

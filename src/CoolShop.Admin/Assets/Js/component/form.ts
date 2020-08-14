@@ -1,4 +1,4 @@
-﻿class From extends Base {
+﻿class Form extends Base {
     private static isAuto: any = null;
 
     /**
