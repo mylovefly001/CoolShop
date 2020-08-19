@@ -41,16 +41,16 @@ var Base = /** @class */ (function () {
     };
     return Base;
 }());
-var From = /** @class */ (function (_super) {
-    __extends(From, _super);
-    function From() {
+var Form = /** @class */ (function (_super) {
+    __extends(Form, _super);
+    function Form() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     /**
      * iframe重设大小
      * @param layer
      */
-    From.iframeResize = function (layer) {
+    Form.iframeResize = function (layer) {
         var _this = this;
         var i = 0;
         this.isAuto = setInterval(function () {
@@ -62,7 +62,7 @@ var From = /** @class */ (function (_super) {
             }
         }, 100);
     };
-    From.Dialog = function (param) {
+    Form.Dialog = function (param) {
         if (param === void 0) { param = {}; }
         if (!param.hasOwnProperty("form")) {
             return false;
@@ -118,7 +118,7 @@ var From = /** @class */ (function (_super) {
             }
         });
     };
-    From.Sidebar = function (param) {
+    Form.Sidebar = function (param) {
         if (param === void 0) { param = {}; }
         if (!param.hasOwnProperty("form")) {
             return false;
@@ -166,8 +166,8 @@ var From = /** @class */ (function (_super) {
             }
         });
     };
-    From.isAuto = null;
-    return From;
+    Form.isAuto = null;
+    return Form;
 }(Base));
 var MenuTree = /** @class */ (function () {
     function MenuTree() {
@@ -604,133 +604,5 @@ var Table = /** @class */ (function (_super) {
         }
     };
     return Table;
-}(Base));
-var Form = /** @class */ (function (_super) {
-    __extends(Form, _super);
-    function Form() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    /**
-     * iframe重设大小
-     * @param layer
-     */
-    Form.iframeResize = function (layer) {
-        var _this = this;
-        var i = 0;
-        this.isAuto = setInterval(function () {
-            layer.iframeAuto(layer.getFrameIndex(window.name));
-            i++;
-            if (typeof (_this.isAuto) === "number" && i == 10) {
-                clearInterval(_this.isAuto);
-                _this.isAuto = null;
-            }
-        }, 100);
-    };
-    Form.Dialog = function (param) {
-        if (param === void 0) { param = {}; }
-        if (!param.hasOwnProperty("form")) {
-            return false;
-        }
-        if (!param.hasOwnProperty("layer")) {
-            return false;
-        }
-        if (!param.hasOwnProperty("ajaxUrl")) {
-            return false;
-        }
-        var that = this;
-        $(param["form"]).form({
-            fields: param.hasOwnProperty("fields") ? param["fields"] : null,
-            inline: param.hasOwnProperty("inline") ? param["inline"] : true,
-            on: "change",
-            onSuccess: function (event, fields) {
-                var loading = param["layer"].load(2);
-                if (param.hasOwnProperty("before") && typeof (param["before"]) === "function") {
-                    fields = param["before"](fields);
-                }
-                $.ajax({
-                    url: param['ajaxUrl'],
-                    type: "POST",
-                    data: fields,
-                    dataType: "JSON",
-                    success: function (rs) {
-                        if (param.hasOwnProperty("success") && typeof (param["success"]) === "function") {
-                            param["success"](rs["data"]);
-                        }
-                    },
-                    error: function (request) {
-                        if (Base.isEmpty(request.responseText)) {
-                            param["layer"].msg(request.statusText, { icon: 2 });
-                        }
-                        else {
-                            param["layer"].msg(request.responseJSON.msg, { icon: 2 });
-                        }
-                    },
-                    complete: function (request) {
-                        param["layer"].close(loading);
-                    }
-                });
-            },
-            onValid: function () {
-                if (param.hasOwnProperty("autoIframe") && param["autoIframe"] == true) {
-                    that.iframeResize(param["layer"]);
-                }
-            },
-            onInvalid: function () {
-                if (param.hasOwnProperty("autoIframe") && param["autoIframe"] == true) {
-                    that.iframeResize(param["layer"]);
-                }
-            }
-        });
-    };
-    Form.Sidebar = function (param) {
-        if (param === void 0) { param = {}; }
-        if (!param.hasOwnProperty("form")) {
-            return false;
-        }
-        if (!param.hasOwnProperty("layer")) {
-            return false;
-        }
-        if (!param.hasOwnProperty("ajaxUrl")) {
-            return false;
-        }
-        $(param["form"]).form({
-            fields: param.hasOwnProperty("fields") ? param["fields"] : null,
-            inline: param.hasOwnProperty("inline") ? param["inline"] : true,
-            on: "change",
-            onSuccess: function (event, fields) {
-                $(event.target).addClass("loading");
-                if (param.hasOwnProperty("before") && typeof (param["before"]) === "function") {
-                    fields = param["before"](fields);
-                }
-                $.ajax({
-                    url: param['ajaxUrl'],
-                    type: "POST",
-                    data: fields,
-                    dataType: "JSON",
-                    success: function (rs) {
-                        if (param.hasOwnProperty("success") && typeof (param["success"]) === "function") {
-                            param["success"](rs["data"]);
-                        }
-                    },
-                    error: function (request) {
-                        if (Base.isEmpty(request.responseText)) {
-                            param["layer"].msg(request.statusText, { icon: 2 });
-                        }
-                        else {
-                            param["layer"].msg(request.responseJSON.msg, { icon: 2 });
-                        }
-                    },
-                    complete: function (request) {
-                        $(event.target)
-                            .removeClass("loading")
-                            .closest(".ui.right.sidebar")
-                            .sidebar("toggle");
-                    }
-                });
-            }
-        });
-    };
-    Form.isAuto = null;
-    return Form;
 }(Base));
 //# sourceMappingURL=tools.js.map

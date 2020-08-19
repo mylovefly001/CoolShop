@@ -1,0 +1,12 @@
+﻿#leftMenu {
+    padding: 0;
+}
+
+#leftMenu .node {
+    cursor: pointer;
+    padding: 10px 0 10px 25px;
+}
+
+#leftMenu > .child {
+    text-indent: 22px;
+}

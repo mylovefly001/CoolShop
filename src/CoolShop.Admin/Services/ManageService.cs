@@ -163,7 +163,7 @@ namespace CoolShop.Admin.Services
                     throw new Exception("action名称不得为空");
                 }
 
-                rsSysMenuInfo.Mctr = sysMenuWrapper.Mact;
+                rsSysMenuInfo.Mctr = sysMenuWrapper.Mctr;
                 rsSysMenuInfo.Mact = sysMenuWrapper.Mact;
                 rsSysMenuInfo.Mkey = sysMenuWrapper.Mctr.Md5(sysMenuWrapper.Mact);
                 rsSysMenuInfo.Icon = string.Empty;

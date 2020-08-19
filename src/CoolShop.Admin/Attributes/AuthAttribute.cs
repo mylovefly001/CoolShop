@@ -36,7 +36,7 @@ namespace CoolShop.Admin.Attributes
                     throw new Exception("该管理员未登录", StatusCodeEnum.LogicErr);
                 }
 
-                var sessionObj = JsonConvert.DeserializeObject<AdminSessionEntity>(sessionJson);
+                var sessionObj = JsonConvert.DeserializeObject<AdminSessionEntity>(sessionJson!);
                 if (sessionObj.IsRoot == 0)
                 {
                     if (IsRoot)
@@ -53,16 +53,17 @@ namespace CoolShop.Admin.Attributes
                         }
                     }
                 }
+
+                sessionObj.CurrentCtr = Ctr;
+                sessionObj.CurrentAct = Act;
                 if (context.Controller is Controller controller)
                 {
-                    sessionObj.CurrentCtr = Ctr;
-                    sessionObj.CurrentAct = Act;
                     controller.ViewBag.AdminSession = sessionObj;
                 }
             }
             catch (Exception e)
             {
-                throw new Exception("该管理员未登录");
+                throw new Exception("该管理员未登录", StatusCodeEnum.LogicErr);
             }
         }
     }

@@ -25,7 +25,7 @@ namespace CoolShop.Admin.Controllers
         /// <returns></returns>
         [HttpGet]
         [Auth(Ctr = "Manage", Act = "MenuList")]
-        public async Task<IActionResult> MenuList()
+        public async Task<ActionResult> MenuList()
         {
             ViewBag.rsSysMenuList = await ManageService.GetSysMenuList(t => t.Pid == 0);
             return View();
@@ -83,7 +83,7 @@ namespace CoolShop.Admin.Controllers
 
         [HttpGet]
         [Auth(Ctr = "Manage", Act = "AdminGroupList")]
-        public async Task<IActionResult> AdminGroupList()
+        public async Task<ActionResult> AdminGroupList()
         {
             ViewBag.rsSysMenuList = (await ManageService.GetSysMenuTree()).EncoderJson();
             return View();
@@ -133,7 +133,7 @@ namespace CoolShop.Admin.Controllers
 
         [HttpGet]
         [Auth(Ctr = "Manage", Act = "AdminList")]
-        public async Task<IActionResult> AdminList()
+        public async Task<ActionResult> AdminList()
         {
             ViewBag.rsSysAdminGroupList = await ManageService.GetSysAdminGroupList();
             return View();

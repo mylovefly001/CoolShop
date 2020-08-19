@@ -1,0 +1,74 @@
+﻿<div class="header">
+    <i class="icon chevron left" bind-cmd="return" title="返回"></i>
+    <span>添加属性</span>
+</div>
+<div class="content">
+    <div class="ui form" id="form1">
+        <div class="field">
+            <label>选择模板：</label>
+            <div class="ui selection dropdown tid">
+                <input type="hidden" name="tid" value="0">
+                <i class="dropdown icon"></i>
+                <div class="text">选择模板</div>
+                <div class="menu">
+                    <div class="item" data-value="0">选择模板</div>
+                    @foreach (var goodsTemplate in ViewBag.rsGoodsTemplateList)
+                    {
+                        var disabled = goodsTemplate.Status == 0 ? "disabled" : "";
+                        <div class="item @disabled" data-value="@goodsTemplate.Id">@goodsTemplate.Name</div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>属性名称：</label>
+            <input type="text" name="name" placeholder="属性名称">
+        </div>
+        <div class="field">
+            <label>属性描述：</label>
+            <textarea name="description" placeholder="属性描述" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+            <label>录入模式：</label>
+            <div class="ui selection dropdown tid">
+                <input type="hidden" name="inputMode" value="0">
+                <i class="dropdown icon"></i>
+                <div class="text">选择模式</div>
+                <div class="menu">
+                    <div class="item" data-value="0">手动输入</div>
+                    <div class="item" data-value="1">单选</div>
+                    <div class="item" data-value="2">多选</div>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>可选值：</label>
+            <textarea name="inputVal" placeholder="输入值，一行一个" rows="3"></textarea>
+        </div>
+        <div class="field">
+            <label>排序：</label>
+            <input type="text" name="sort" placeholder="数字越大越靠前" style="width: 150px;">
+        </div>
+        <div class="field">
+            <label>图标类名：</label>
+            <div class="ui right labeled left icon input">
+                <i class="folder outline icon"></i>
+                <input type="text" name="icon" placeholder="图标类名">
+                <div class="ui default label" onclick="return selectIcon(this);" style="cursor: pointer;">图标库</div>
+            </div>
+        </div>
+        <div class="inline field">
+            <div class="ui toggle checkbox status">
+                <input type="checkbox" name="status" class="hidden">
+                <label>是否启用</label>
+            </div>
+        </div>
+        <input type="hidden" name="cmd" value="add">
+        <input type="hidden" name="id" value="0">
+        <button class="ui fluid blue submit button"><i class="icon save"></i>保存</button>
+    </div>
+</div>
+<script>
+    let sidebarObj = $(".ui.right.sidebar");
+</script>

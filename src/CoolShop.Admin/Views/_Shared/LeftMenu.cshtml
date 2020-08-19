@@ -1,23 +1,91 @@
-﻿@foreach (var menuDetail in ViewBag.AdminSession.MenuDetail)
-{
-    var hasChild = menuDetail.MenuDetail.Count > 0 ? 1 : 0;
-    <div class="node" bind-child="@hasChild" bind-ctr="@menuDetail.MenuCtr" bind-act="@menuDetail.MenuAct">
-        @if (menuDetail.MenuPid == 0)
-        {
-            if (string.IsNullOrWhiteSpace(menuDetail.MenuIcon))
-            {
-                menuDetail.MenuIcon = menuDetail.MenuType == 1 ? "folder outline" : "file outline";
+﻿<div class="sixteen wide column">
+    <div class="ui vertical segment" id="leftMenu"></div>
+</div>
+<script>
+    let menuDetail = @Html.Raw(CoolShop.Core.Library.Common.EncoderJson(ViewBag.AdminSession.MenuDetail));
+    let menuCtr = "@ViewBag.AdminSession.CurrentCtr";
+    let menuAct = "@ViewBag.AdminSession.CurrentAct";
+    $(function () {
+        let html = createMenuNode(menuDetail);
+        let node = $("#leftMenu").html(html).find(".node");
+        $.each(node, (idx, item) => {
+            if (typeof ($(item).attr("bind-ctr")) != "undefined") {
+                let ctr = $(item).attr("bind-ctr");
+                let act = $(item).attr("bind-act");
+                if (menuCtr == ctr && menuAct == act) {
+                    $(item).css({
+                        "color": "#fff",
+                        "background": "#2B88D8",
+                    }).attr("bind-select", 1);
+                    return true;
+                }
             }
-            <i class="@menuDetail.MenuIcon icon"></i>
+        });
+        node.mouseenter(function () {
+            if (typeof ($(this).attr("bind-select")) != "undefined") {
+                return true;
+            }
+            $(this).css({
+                "color": "#0078d4",
+                "background": "#DEDEDE",
+                "border-right": "solid 2px #0078d4"
+            });
+        }).mouseleave(function () {
+            if (typeof ($(this).attr("bind-select")) != "undefined") {
+                return true;
+            }
+            $(this).css({
+                "color": "#201f1e",
+                "background": "transparent",
+                "border-right": "none"
+            });
+        }).click(function () {
+            if (typeof ($(this).attr("bind-child")) != "undefined" && $(this).attr("bind-child") == "1") {
+                if ($(this).attr("bind-child") == "1") {
+                    let child = $(this).next(".child");
+                    child.toggle();
+                    if (child.css("display") == "none") {
+                        $(this).children("i:last").removeClass("angle down").addClass("angle right");
+                    } else {
+                        $(this).children("i:last").removeClass("angle right").addClass("angle down");
+                    }
+                }
+            }
+            if (typeof ($(this).attr("bind-ctr")) != "undefined") {
+                let ctr = $(this).attr("bind-ctr");
+                let act = $(this).attr("bind-act");
+                window.location.href = `/${ctr}/${act}`;
+            }
+        });
+    });
+
+    function createMenuNodeHtml(hasChild, data) {
+        let html = `<div class="node" bind-child="${(hasChild ? 1 : 0)}" bind-ctr="${data.menuCtr}" bind-act="${data.menuAct}">`;
+        if (data.menuPid === 0) {
+            if (!Base.isEmpty(data.menuIcon)) { } else {
+                data.menuIcon = data.menuType === 1 ? "folder outline" : "file outline";
+            }
+            html += `<i class="${data.menuIcon} icon"></i>`;
         }
-        <span>@menuDetail.MenuName</span>
-        @if (hasChild == 1)
-        {
-            <i class="angle down icon"></i>
+        html += `<span>${data.menuName}</span>`;
+        if (hasChild) {
+            html += `<i class="angle down icon"></i>`;
         }
-    </div>
-    if (hasChild==1)
-    {
-        <div></div>
+        html += `</div>`;
+        return html;
     }
-}
+
+    function createMenuNode(data) {
+        let html = "";
+        for (let item of data) {
+            let hasChild = item.hasOwnProperty("menuDetail") && item.menuDetail.length > 0;
+            html += createMenuNodeHtml(hasChild, item);
+            if (hasChild) {
+                html += `<div class="child">`;
+                html += createMenuNode(item.menuDetail);
+                html += `</div>`;
+            }
+        }
+        return html;
+    }
+</script>

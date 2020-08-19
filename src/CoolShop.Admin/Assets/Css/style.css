@@ -1,6 +1,7 @@
 ﻿@import "header.css";
 @import "tree.css";
 @import "sidebar.css";
+@import "menu.css";
 
 html, body {
     height: 100%;
@@ -35,7 +36,6 @@ html, body {
     bottom: 0;
     left: 0;
     height: 100%;
-    z-index: -1000;
     overflow-y: auto;
     border-right: solid 1px #DEDEDE;
 }

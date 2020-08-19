@@ -1,0 +1,55 @@
+﻿@{
+    Layout = "../_Shared/MainLayer";
+    ViewData["title"] = "商品属性";
+    ViewData["sidebar"] = "GoodsAttribute";
+}
+<div class="sixteen wide column">
+    <div class="ui small buttons" style="margin-right:15px;">
+        <button class="ui blue button" bind-cmd="add">添加</button>
+    </div>
+</div>
+<div class="sixteen wide column">
+    <div class="ui vertical segment" id="table">
+        <table class="ui blue selectable celled table">
+            <thead>
+                <tr>
+                    <th style="width: 75px;">ID</th>
+                    <th style="width: 200px;">名称</th>
+                    <th style="width: 100px;">排序</th>
+                    <th style="width: 160px;">状态</th>
+                    <th style="width: 200px;">添加时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("button[bind-cmd='add']").on("click", () => {
+            showSidebar();
+        });
+    });
+
+    function showSidebar() {
+        sidebarObj.sidebar('setting', {
+            defaultTransition: {
+                computer: {
+                    left: 'overlay',
+                    right: 'overlay',
+                    top: 'overlay',
+                    bottom: 'overlay'
+                },
+                mobile: {
+                    left: 'overlay',
+                    right: 'overlay',
+                    top: 'overlay',
+                    bottom: 'overlay'
+                }
+            }
+        }).sidebar("toggle");
+    }
+</script>

@@ -7,14 +7,14 @@ namespace CoolShop.Admin.Controllers
     {
         [Auth]
         [HttpGet]
-        public IActionResult Index()
+        public ActionResult Index()
         {
             return View();
         }
 
         [Auth]
         [HttpGet]
-        public IActionResult Icon()
+        public ActionResult Icon()
         {
             return View();
         }

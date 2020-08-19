@@ -87,26 +87,17 @@
     $.fn.form.settings.rules.menuCtr = function () {
         let type = selectType.dropdown("get value");
         //如果是菜单类型
-        if (type == 2 && Base.isEmpty(inputMctr.val())) {
-            return false;
-        }
-        return true;
+        return !(type === 2 && Base.isEmpty(inputMctr.val()));
     };
     $.fn.form.settings.rules.menuAct = function () {
         let type = selectType.dropdown("get value");
         //如果是目录类型
-        if (type == 2 && Base.isEmpty(inputMact.val())) {
-            return false;
-        }
-        return true;
+        return !(type === 2 && Base.isEmpty(inputMact.val()));
     };
     $.fn.form.settings.rules.menuIcon = function () {
         let type = selectType.dropdown("get value");
         //如果是图标
-        if (type == 1 && Base.isEmpty(inputIcon.val())) {
-            return false;
-        }
-        return true;
+        return !(type === 1 && Base.isEmpty(inputIcon.val()));
     };
 
     $(function () {

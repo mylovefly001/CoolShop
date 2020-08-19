@@ -1,0 +1,182 @@
+﻿@{
+    Layout = "../_Shared/MainLayer";
+    ViewData["title"] = "商品模板";
+    ViewData["sidebar"] = "";
+}
+<div class="sixteen wide column">
+    <div class="ui vertical segment" id="table">
+        <table class="ui blue selectable celled table">
+            <thead>
+                <tr>
+                    <th style="width: 75px;">ID</th>
+                    <th style="width: 200px;">名称</th>
+                    <th style="width: 100px;">排序</th>
+                    <th style="width: 160px;">状态</th>
+                    <th style="width: 200px;">添加时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr bind-attr="first">
+                    <td></td>
+                    <td>
+                        <div class="ui small fluid input">
+                            <input type="text" bind-name="name" placeholder="名称" bind-id="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui small fluid input">
+                            <input type="text" bind-name="sort" placeholder="排序" bind-id="0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui toggle checkbox status" bind-id="0" bind-val="1">
+                            <input type="checkbox" bind-name="status" class="hidden">
+                            <label>禁/启</label>
+                        </div>
+                        <script>
+                            $(function () {
+                                let checkbox = $(".ui.checkbox.status[bind-id='0']");
+                                checkbox.checkbox(checkbox.attr("bind-val") == "1" ? "check" : "uncheck");
+                            });
+                        </script>
+                    </td>
+                    <td></td>
+                    <td>
+                        <div class="ui mini buttons">
+                            <button class="ui blue button" onclick="return addItem(this);">添加</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(function () {
+        initTable();
+    });
+
+    function initTable() {
+        table = new Table({
+            container: $("#table"),
+            layer: layer,
+            columns: [
+                { "fields": "id" },
+                {
+                    "fields": "", "event": (item) => {
+                        let str = `<div class="ui small fluid input">
+                                        <input type="text" bind-name="name" placeholder="名称" bind-id="${item.id}" value="${item.name}">
+                                    </div>`;
+                        return str;
+                    }
+                },
+                {
+                    "fields": "", "event": (item) => {
+                        let str = `<div class="ui small fluid input">
+                                        <input type="text" bind-name="sort" placeholder="名称" bind-id="${item.id}" value="${item.sort}">
+                                    </div>`;
+                        return str;
+                    }
+                },
+                {
+                    "fields": "", "event": (item) => {
+                        let str = `<div class="ui toggle checkbox status" bind-id="${item.id}" bind-val="${item.status}">
+                                        <input type="checkbox" bind-name="status" class="hidden">
+                                        <label>禁/启</label>
+                                    </div>`;
+                        return str;
+                    }
+                },
+                { "fields": "createdTime" },
+                {
+                    "fields": "id", "event": (id) => {
+                        let str = `<div class="ui mini buttons">
+                                        <button class="ui blue button" onclick="return upItem(this);" bind-id="${id}">更新</button>
+                                        <div class="or"></div>
+                                        <button class="ui button" onclick="return delItem(this);" bind-id="${id}">删除</button>
+                                    </div>`;
+                        return str;
+                    }
+                }
+            ],
+            ajax: {
+                url: '@Url.Action("TemplateDo", "Goods",new { cmd="list" })',
+                type: "GET",
+                dataType: "JSON"
+            },
+            completeEvent: (container) => {
+                container.find(".ui.checkbox.status").each(function (i, item) {
+                    $(item).checkbox($(item).attr("bind-val") === "1" ? "check" : "uncheck");
+                });
+            }
+        });
+    }
+
+    function ajaxDo(param) {
+        let loading = layer.load(2);
+        $.ajax({
+            url: '@Url.Action("TemplateDo", "Goods")',
+            type: "POST",
+            data: param,
+            dataType: "JSON",
+            success: (rs) => {
+                initTable();
+            },
+            error: (request) => {
+                if (Base.isEmpty(request.responseText)) {
+                    layer.msg(request.statusText, { icon: 2 });
+                } else {
+                    layer.msg(request.responseJSON.msg, { icon: 2 });
+                }
+            },
+            complete: (request) => {
+                layer.close(loading);
+            }
+        });
+    }
+
+
+    function addItem(obj) {
+        let tr = $(obj).closest("tr");
+        let param = {
+            cmd: "add",
+            name: tr.find("input[bind-name='name']").val(),
+            sort: tr.find("input[bind-name='sort']").val(),
+            status: tr.find(".ui.checkbox").checkbox("is checked") ? 1 : 0
+        };
+        if (Base.isEmpty(param["name"])) {
+            layer.msg("模板名称不得为空！", { icon: 2 });
+            return false;
+        }
+        ajaxDo(param);
+    }
+
+     function upItem(obj) {
+        let id = parseInt($(obj).attr("bind-id"));
+        let tr = $(obj).closest("tr");
+        let param = {
+            id: id,
+            cmd: "edit",
+            name: tr.find("input[bind-name='name']").val(),
+            sort: tr.find("input[bind-name='sort']").val(),
+            status: tr.find(".ui.checkbox").checkbox("is checked") ? 1 : 0
+        };
+        if (Base.isEmpty(param["name"])) {
+            layer.msg("模板名称不得为空！", { icon: 2 });
+            return false;
+        }
+        ajaxDo(param);
+    }
+
+
+    function delItem(obj) {
+        layer.confirm("确定删除选择的项？", { icon: 3, title: '提示' }, function (confirmAlert) {
+            layer.close(confirmAlert);
+            ajaxDo({
+                id: parseInt($(obj).attr("bind-id")),
+                cmd: "del"
+            });
+        });
+    }
+</script>

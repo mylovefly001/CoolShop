@@ -15,7 +15,7 @@ namespace CoolShop.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public ActionResult Index()
         {
             var redirect = GetParam<string>("redirect");
             if (string.IsNullOrWhiteSpace(redirect))
