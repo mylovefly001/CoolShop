@@ -22,11 +22,21 @@ namespace CoolShop.Admin.Services
 
         private SysAdminRepository SysAdminRepository { get; }
 
-        public ManageService(SysMenuRepository sysMenuRepository, SysAdminGroupRepository sysAdminGroupRepository, SysAdminRepository sysAdminRepository)
+        private SysConfigRepository SysConfigRepository { get; }
+
+        private SysConfigUploadRepository SysConfigUploadRepository { get; }
+
+        public ManageService(
+            SysMenuRepository sysMenuRepository,
+            SysAdminGroupRepository sysAdminGroupRepository, SysAdminRepository sysAdminRepository,
+            SysConfigRepository sysConfigRepository, SysConfigUploadRepository sysConfigUploadRepository
+        )
         {
             SysMenuRepository = sysMenuRepository;
             SysAdminGroupRepository = sysAdminGroupRepository;
             SysAdminRepository = sysAdminRepository;
+            SysConfigRepository = sysConfigRepository;
+            SysConfigUploadRepository = sysConfigUploadRepository;
         }
 
         #region 系统菜单
@@ -454,6 +464,15 @@ namespace CoolShop.Admin.Services
             }
         }
 
+        #endregion
+
+        #region 系统设置
+
+        public async Task<SysConfigModel> GetSysConfigInfo()
+        {
+            return await SysConfigRepository.GetInfo();
+        }
+        
         #endregion
     }
 }

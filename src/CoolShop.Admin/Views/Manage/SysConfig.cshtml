@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "../_Shared/MainLayer";
+    ViewData["title"] = "系统设置";
+    ViewData["sidebar"] = "";
+}
+<style>
+    .main > .right > .column.config {
+        display: flex;
+        justify-content: flex-start;
+        -webkit-justify-content: flex-start;
+    }
+
+        .main > .right > .column.config > .ui.message {
+            width: 250px;
+            cursor: pointer;
+            margin: 0 20px 0 0;
+        }
+            .main > .right > .column.config > .ui.message > .content > p {
+                color: #808080;
+            }
+</style>
+<div class="sixteen wide column config">
+    <div class="ui icon message">
+        <i class="cog icon"></i>
+        <div class="content">
+            <div class="header">基本设置</div>
+            <p>设置一些基本信息</p>
+        </div>
+    </div>
+    <div class="ui icon message" bind-name="upload">
+        <i class="upload icon"></i>
+        <div class="content">
+            <div class="header">上传设置</div>
+            <p></p>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        let uploadDom = $("div[bind-name='upload']");
+        let uploadId = parseInt("@ViewBag.rsSysConfigInfo.UploadId");
+        if (uploadId == 0) {
+            uploadDom.find(".content>p").text("本地上传");
+        }
+    });
+</script>

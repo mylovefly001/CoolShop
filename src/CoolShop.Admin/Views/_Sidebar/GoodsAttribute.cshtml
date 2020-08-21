@@ -52,10 +52,12 @@
         </div>
         <div class="field">
             <label>图标类名：</label>
-            <div class="ui right labeled left icon input">
-                <i class="folder outline icon"></i>
-                <input type="text" name="icon" placeholder="图标类名">
-                <div class="ui default label" onclick="return selectIcon(this);" style="cursor: pointer;">图标库</div>
+            <div class="ui action input">
+                <input type="text" name="icon" placeholder="">
+                <select class="ui compact selection dropdown icon" style="width:100px;">
+                    <option value="1">本地上传</option>
+                    <option value="2">云端上传</option>
+                </select>
             </div>
         </div>
         <div class="inline field">
@@ -71,4 +73,7 @@
 </div>
 <script>
     let sidebarObj = $(".ui.right.sidebar");
+    $(function () {
+        $(".ui.selection.dropdown.icon").dropdown();
+    });
 </script>

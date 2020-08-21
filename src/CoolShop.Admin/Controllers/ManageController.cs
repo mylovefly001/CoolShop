@@ -190,5 +190,17 @@ namespace CoolShop.Admin.Controllers
         }
 
         #endregion
+
+        #region 系统设置
+
+        [HttpGet]
+        [Auth(IsRoot = true)]
+        public async Task<ActionResult> SysConfig()
+        {
+            ViewBag.rsSysConfigInfo = await ManageService.GetSysConfigInfo();
+            return View();
+        }
+
+        #endregion
     }
 }

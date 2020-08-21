@@ -7,21 +7,12 @@ using CoolShop.Model;
 
 namespace CoolShop.Repository
 {
-    public class SysAdminRepository : BaseRepository
+    public class SysConfigUploadRepository : BaseRepository
     {
-        public SysAdminRepository(DbContext dbContext) : base(dbContext)
+        public SysConfigUploadRepository(DbContext dbContext) : base(dbContext)
         {
         }
 
-        /// <summary>
-        /// 根据ID删除一批数据
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        public async Task<int> Delete(List<int> ids)
-        {
-            return await DbContext.Delete<SysAdminModel>(ids).ExecuteAffrowsAsync();
-        }
 
         /// <summary>
         /// 根据ID删除一条数据
@@ -30,7 +21,7 @@ namespace CoolShop.Repository
         /// <returns></returns>
         public async Task<int> Delete(int id = 0)
         {
-            return await DbContext.Delete<SysAdminModel>(id).ExecuteAffrowsAsync();
+            return await DbContext.Delete<SysConfigUploadModel>(id).ExecuteAffrowsAsync();
         }
 
 
@@ -39,9 +30,9 @@ namespace CoolShop.Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<long> Insert(SysAdminModel model)
+        public async Task<long> Insert(SysConfigUploadModel model)
         {
-            return await DbContext.Insert<SysAdminModel>().AppendData(model).ExecuteIdentityAsync();
+            return await DbContext.Insert<SysConfigUploadModel>().AppendData(model).ExecuteIdentityAsync();
         }
 
         /// <summary>
@@ -49,9 +40,9 @@ namespace CoolShop.Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<int> Update(SysAdminModel model)
+        public async Task<int> Update(SysConfigUploadModel model)
         {
-            return await DbContext.Update<SysAdminModel>().SetSource(model).ExecuteAffrowsAsync();
+            return await DbContext.Update<SysConfigUploadModel>().SetSource(model).ExecuteAffrowsAsync();
         }
 
         /// <summary>
@@ -59,9 +50,9 @@ namespace CoolShop.Repository
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public async Task<SysAdminModel> GetInfo(Expression<Func<SysAdminModel, bool>> func = null)
+        public async Task<SysConfigUploadModel> GetInfo(Expression<Func<SysConfigUploadModel, bool>> func = null)
         {
-            return await DbContext.Select<SysAdminModel>().WhereIf(func != null, func).ToOneAsync();
+            return await DbContext.Select<SysConfigUploadModel>().WhereIf(func != null, func).ToOneAsync();
         }
 
         /// <summary>
@@ -69,9 +60,9 @@ namespace CoolShop.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<SysAdminModel> GetInfo(int id = 0)
+        public async Task<SysConfigUploadModel> GetInfo(int id = 0)
         {
-            return await DbContext.Select<SysAdminModel>().Where(t => t.Id == id).ToOneAsync();
+            return await DbContext.Select<SysConfigUploadModel>().Where(t => t.Id == id).ToOneAsync();
         }
 
         /// <summary>
@@ -79,9 +70,9 @@ namespace CoolShop.Repository
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public async Task<List<SysAdminModel>> GetList(Expression<Func<SysAdminModel, bool>> func = null)
+        public async Task<List<SysConfigUploadModel>> GetList(Expression<Func<SysConfigUploadModel, bool>> func = null)
         {
-            return await DbContext.Select<SysAdminModel>().WhereIf(func != null, func)
+            return await DbContext.Select<SysConfigUploadModel>().WhereIf(func != null, func)
                 .OrderBy(t => t.Id)
                 .ToListAsync();
         }
